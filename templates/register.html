@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <br>
+    <div class="container is-fluid">
+        <h1 class="title">Lorem Ipsum</h1>
+    </div>
+       
+    <div class="container is-fluid">
+
+        <div class="tabs is-large">
+            <ul>
+                <li id="log-in-tab"><a href="/login">Log in</a></li>
+                <li id="register-tab" class="is-active"><a>Register</a></li>
+            </ul>
+        </div>
+
+        <form action="/register" method="post">
+            <div id="name-fields" class="field">
+                <div class="field">
+                    <label for="" class="label">First name</label>
+                    <div class="control">
+                        <input name="first_name" type="text" class="input" placeholder="First name">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="" class="label">Surname</label>
+                    <div class="control">
+                        <input name="surname" type="text" class="input" placeholder="Surname">
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="" class="label">Email</label>
+                <div class="control">
+                    <input type="email" name="email" class="input" placeholder="Email">
+                </div>
+            </div>
+                
+            <div class="field">
+                <label for="" class="label">Password</label>
+                <div class="control">
+                    <input name="password" type="password" class="input" placeholder="Password">
+                </div>
+            </div>
+
+            <div id="confirm-password" class="field">
+                <label for="" class="label">Confirm password</label>
+                <div class="control">
+                    <input name="confirm_password" type="password" class="input" placeholder="Confirm password">
+                </div>
+            </div>
+
+            <!-- <div class="field">
+                <label for="">I am a...</label>
+                <div class="control">
+                    <input type="radio" name="account_type" value="student" id="student-radio">
+                    <label for="student">Student</label>
+                    <br>
+                    <input type="radio" name="account_type" value="teacher" id="teacher-radio">
+                    <label for="teacher">Teacher</label>
+                </div>
+            </div> -->
+
+            <!-- <div>
+                <label for="">Student or Teacher?</label>
+                <br>
+                <div class="select">
+                    <select name="user-type" id="user-type">
+                        <option value="" onclick="hideYearGroups()">I am a...</option>
+                        <option value="student" onclick="showYearGroups()">Student</option>
+                        <option value="teacher" onclick="hideYearGroups()">Teacher</option>
+                    </select>
+                </div>
+            </div> -->
+
+            <div class="level">
+                <!-- <label for="" class="label">Are you a student or teacher?</label> -->
+                <div class="level-left">
+                    <div class="level-item">
+                        <button id="student-button" class="button is-primary" value="student-reg">
+                            <span class="icon">
+                                <i class="fa-solid fa-lg fa-graduation-cap"></i>
+                            </span>
+                            <span>Register as student</span>
+                        </button>
+                    </div>
+                    <div class="level-item">                 
+                        <button id="teacher-button" class="button is-primary" value="teacher-reg">
+                            <span class="icon">
+                                <i class="fa-solid fa-lg fa-chalkboard-user"></i>
+                            </span>
+                            <span>Register as teacher</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div id="year-group-dropdown" style="display:none;">
+                <label for="">Year group</label>
+                <br>
+                <div class="select">
+                    <select name="year-group" id="">
+                        <option value="">Select your year group</option>
+                        <option value="7">Year 7</option>
+                        <option value="8">Year 8</option>
+                        <option value="9">Year 9</option>
+                        <option value="10">Year 10</option>
+                        <option value="11">Year 11</option>
+                        <option value="12">Year 12</option>
+                        <option value="13">Year 13</option>
+                    </select>
+                </div>
+            </div>
+            <br> -->
+
+            <!-- <div class="control">
+                <input type="submit" value="Register" class="button is-primary">
+            </div> -->
+
+            <br>
+        </form>
+    
+    </div>
+
+    <script src="../static/js/register.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/02402844ea.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

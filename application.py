@@ -1,0 +1,169 @@
+from flask import Flask, redirect, render_template, request, session
+from flask_session import Session
+from werkzeug import security
+
+import sqlite3
+
+from helpers import login_required, generate_salt, create_username, insert_user_to_database
+import vernam_cipher
+
+app = Flask(__name__)
+
+# Session config
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+@app.route("/")
+# @login_required
+def index():
+    # TODO
+    return redirect("/login")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    # TODO Implement login system
+
+
+    if request.method == "POST":
+        """
+        Check if the username exists.
+        Check if the password's hash matches the one in the database.
+        """
+
+        # get login details
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        # connect to database
+        con = sqlite3.connect("db/database.db")
+        cur = con.cursor()
+
+        if not(username and password):
+            return redirect("/login")
+
+        if username[-1] == "s":    
+            try:
+                db_username = cur.execute("SELECT username FROM students WHERE username = ?", [username]).fetchone()[0]
+            except:
+                return render_template("test_page.html", error="USERNAME DOES NOT MATCH")
+
+            try:
+                db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
+                key = cur.execute("SELECT key FROM students WHERE username = ?", [username]).fetchone()[0]
+                salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
+            except:
+                return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
+        
+        elif username[-1] == "t":
+            db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
+            db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
+            key = cur.execute("SELECT key FROM teachers WHERE username = ?", [username]).fetchone()[0]
+            salt = cur.execute("SELECT salt FROM teachers where username = ?", [username]).fetchone()[0]
+        
+
+        print("\n\n\n")
+        print(f"FORM USERNAME - {username}")
+        print(f"FORM PASSWORD - {password}")
+        print(f"DB USERNAME - {db_username}")
+        print(f"DB PASSWORD - {db_password}")
+        print(f"DB SALT {salt}")
+        print(f"DB KEY {key}")
+        print("\n\n\n")
+
+        hash_form_pw = vernam_cipher.encrypt(str(hash(password + salt)), key)
+        print(hash_form_pw)
+
+        if not(db_username):
+            # username not found
+            print("// USERNAME DOES NOT MATCH.")
+            return render_template("test_page.html", error="USERNAME NOT FOUND")
+        elif vernam_cipher.encrypt(str(hash(password + salt)), key) != db_password:
+            # password is wrong
+            print("// PASSWORD DOES NOT MATCH.")
+            return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
+
+        
+        return render_template("test_success.html")
+
+
+    else:
+        return render_template("login.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+
+        first_name = request.form.get("first_name").lower().strip()
+        surname = request.form.get("surname").lower().strip()
+        email = request.form.get("email").lower().strip()
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm-password")
+        # year_group = request.form.get("year-group")
+        account_type = request.form.get("account_type")
+
+        
+        # First and surnames can only be one word and completely alphabetical
+        if not(first_name and surname):
+            # checks if the name fields are not left blank
+            print("Name(s) not given")
+            return redirect("/register")
+        elif not(first_name.isalpha() and surname.isalpha()):
+            print("Name(s) must be completely alphabteical")
+            return redirect("/register")
+        elif len(first_name.split()) != 1 or len(surname.split()) != 1:
+            print("Name(s) must be only one word")
+            return redirect("/register")
+        
+        # email
+        if not(email):
+            print("Email not given")
+        # TODO Validate email(?)
+
+        # both password fields must be given
+        if not(password and confirm_password):
+            redirect("/register")
+        elif password != confirm_password:
+            print("Passwords do not match")
+            return redirect("/register")
+        
+        # make sure the account type and year group was selected
+        if not(account_type):
+            print("Account type must be given")
+            redirect("/register")
+        # if not(year_group):
+        #     print("Year group must be given")
+        #     redirect("/register")
+        
+          
+        # Create username
+        username = create_username(first_name, surname, account_type)
+        
+        # Hash password using a salt, then encrypt it
+        salt = generate_salt()
+        hash_with_salt = hash(password + salt)
+        key = generate_key(len(str(hash_with_salt)))
+        encrypted_hash = vernam_cipher.encrypt(hash_with_salt, key)
+
+        # Insert into DB
+        details = (username, email, first_name, surname, password, salt, key)
+        insert_user_to_database(details)
+
+        session["user_info"] = {
+            "username": username,
+            "first_name": first_name,
+            "surname": surname,
+            "year_group": None # chosen by a student after registration
+        }
+
+        if session["user_info"]["username"][-1] == "t":
+            return render_template("teacher_home.html", details=session["user_info"])
+        else:
+            return render_template("student_home.html", details=session["user_info"])
+
+    else:
+        # Page accessed via a GET request
+        return render_template("register.html")
