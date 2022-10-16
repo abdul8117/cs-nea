@@ -64,13 +64,13 @@ def create_username(f_name, s_name, type):
     first letter of their first name + '.' surname + '_t'
     """
 
-    if type == "s":
-        return f_name + s_name[0] + "_s"
+    if type == "student":
+        return f_name + "." + s_name[0] + "_s"
     else:
-        return f_name[0] + s_name + "_t"
+        return f_name[0] + "." + s_name + "_t"
 
 
-def insert_user_to_database(details):
+def insert_user_to_database(details, account_type):
     """
     TODO info
     """
@@ -79,6 +79,9 @@ def insert_user_to_database(details):
 
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
-    cur.execute("INSERT INTO accounts (username, email, first_name, surname, password, salt, key) VALUES (?, ?, ?, ?, ?, ?, ?)", details)
+    if account_type == "student":
+        cur.execute("INSERT INTO students (username, email, first_name, surname, password, year_group) VALUES (?, ?, ?, ?, ?, ?)", details)
+    else:
+        cur.execute("INSERT INTO teachers (username, email, first_name, surname, password, year_group) VALUES (?, ?, ?, ?, ?, ?)", details)
     con.commit()
     con.close()

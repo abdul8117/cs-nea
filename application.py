@@ -52,16 +52,16 @@ def login():
 
             try:
                 db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
-                key = cur.execute("SELECT key FROM students WHERE username = ?", [username]).fetchone()[0]
-                salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
+                # key = cur.execute("SELECT key FROM students WHERE username = ?", [username]).fetchone()[0]
+                # salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
             except:
                 return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
         
         elif username[-1] == "t":
             db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
             db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            key = cur.execute("SELECT key FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            salt = cur.execute("SELECT salt FROM teachers where username = ?", [username]).fetchone()[0]
+            # key = cur.execute("SELECT key FROM teachers WHERE username = ?", [username]).fetchone()[0]
+            # salt = cur.execute("SELECT salt FROM teachers where username = ?", [username]).fetchone()[0]
         
 
         print("\n\n\n")
@@ -69,18 +69,18 @@ def login():
         print(f"FORM PASSWORD - {password}")
         print(f"DB USERNAME - {db_username}")
         print(f"DB PASSWORD - {db_password}")
-        print(f"DB SALT {salt}")
-        print(f"DB KEY {key}")
+        # print(f"DB SALT {salt}")
+        # print(f"DB KEY {key}")
         print("\n\n\n")
 
-        hash_form_pw = vernam_cipher.encrypt(str(hash(password + salt)), key)
-        print(hash_form_pw)
+        # hash_form_pw = vernam_cipher.encrypt(str(hash(password + salt)), key)
+        # print(hash_form_pw)
 
         if not(db_username):
             # username not found
             print("// USERNAME DOES NOT MATCH.")
             return render_template("test_page.html", error="USERNAME NOT FOUND")
-        elif vernam_cipher.encrypt(str(hash(password + salt)), key) != db_password:
+        elif not(security.check_password_hash(db_password, password)):
             # password is wrong
             print("// PASSWORD DOES NOT MATCH.")
             return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
@@ -104,6 +104,8 @@ def register():
         confirm_password = request.form.get("confirm-password")
         # year_group = request.form.get("year-group")
         account_type = request.form.get("account_type")
+
+        print(f"ACCOUNT TYPE: {account_type}")
 
         
         # First and surnames can only be one word and completely alphabetical
@@ -143,14 +145,16 @@ def register():
         username = create_username(first_name, surname, account_type)
         
         # Hash password using a salt, then encrypt it
-        salt = generate_salt()
-        hash_with_salt = hash(password + salt)
-        key = generate_key(len(str(hash_with_salt)))
-        encrypted_hash = vernam_cipher.encrypt(hash_with_salt, key)
+        # salt = generate_salt()
+        # hash_with_salt = hash(password + salt)
+        # key = generate_key(len(str(hash_with_salt)))
+        # encrypted_hash = vernam_cipher.encrypt(hash_with_salt, key)
+
+        password = security.generate_password_hash(password)
 
         # Insert into DB
-        details = (username, email, first_name, surname, password, salt, key)
-        insert_user_to_database(details)
+        details = (username, email, first_name, surname, password, None)
+        insert_user_to_database(details, account_type)
 
         session["user_info"] = {
             "username": username,
