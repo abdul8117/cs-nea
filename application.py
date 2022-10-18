@@ -24,8 +24,10 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
-    # TODO Implement login system
-
+    """
+    This function is called when a user visits the /login route.
+    Just like register(), the webpage is displayed when a GET request is received while a POST requests resuts in form input needing to be handled. 
+    """
 
     if request.method == "POST":
         """
@@ -44,7 +46,7 @@ def login():
         if not(username and password):
             return redirect("/login")
 
-        if username[-1] == "s":    
+        if "_s" in username:
             try:
                 db_username = cur.execute("SELECT username FROM students WHERE username = ?", [username]).fetchone()[0]
             except:
@@ -57,11 +59,16 @@ def login():
             except:
                 return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
         
-        elif username[-1] == "t":
+        elif "_t" in username:
             db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
             db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
             # key = cur.execute("SELECT key FROM teachers WHERE username = ?", [username]).fetchone()[0]
             # salt = cur.execute("SELECT salt FROM teachers where username = ?", [username]).fetchone()[0]
+        
+        else:
+            db_username = None
+            db_password = None
+
         
 
         print("\n\n\n")
@@ -95,6 +102,14 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
+    """
+    This function is called when a user visits the /register route.
+    If the user is simply visiting the site, it is a GET request and the 'else' block of the selection below is executed.
+    If the user had submitted a form, then a POST request is sent to the server where the form input will be handled.
+    """
+
+
     if request.method == "POST":
 
         first_name = request.form.get("first_name").lower().strip()
