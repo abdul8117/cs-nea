@@ -2,21 +2,31 @@ from flask import redirect, session
 
 from functools import wraps
 
-def login_required(f):
-    """
-    https://werkzeug.palletsprojects.com/en/1.0.x/utils/#werkzeug.security.generate_password_hash
-    """
+# def login_required(f):
+#     """
+#     https://flask.palletsprojects.com/en/2.2.x/patterns/viewdecorators/    
+#     """
 
+#     @wraps(f)
+#     def dec_function():
+#         if not(session.get("user_info")):
+#             # User is not logged in
+#             return redirect("/login")
+#         # User is logged in
+#         return f(*args, **kwargs)
+
+#     return dec_function
+
+
+def login_required(f):
     @wraps(f)
-    def dec_function():
-        if not(session.get("user_info")):
-            # User is not logged in
-            return redirect("/login")
-        
-        # User is logged in
-        return f()
-    
-    return dec_function
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/student-home")
+
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 def generate_salt():
@@ -82,6 +92,6 @@ def insert_user_to_database(details, account_type):
     if account_type == "student":
         cur.execute("INSERT INTO students (username, email, first_name, surname, password, year_group) VALUES (?, ?, ?, ?, ?, ?)", details)
     else:
-        cur.execute("INSERT INTO teachers (username, email, first_name, surname, password, year_group) VALUES (?, ?, ?, ?, ?, ?)", details)
+        cur.execute("INSERT INTO teachers (username, email, first_name, surname, password) VALUES (?, ?, ?, ?, ?)", details)
     con.commit()
     con.close()

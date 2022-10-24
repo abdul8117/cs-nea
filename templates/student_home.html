@@ -1,3 +1,88 @@
-Registered as {{ details.first_name }} {{ details.surname }} <br>
-Password is {{ details.password }} <br>
-You are a {{ details.account_type }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <title>Student Home</title>
+
+    <style>
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+    <br>
+    <div class="nocontainer is-fluid">
+        <section class="section">
+            <h1 class="title">Welcome, Abdul</h1>
+            <p><span class="bold">Username: </span>abdul.a_s</p>
+            <p><span class="bold">Year group: </span>13B</p>
+        </section>
+        
+        <section class="section">
+            <h1 class="title">Your classes</h2>
+            <div class="tile is-ancestor">
+                <div class="tile is-vertical is-parent">
+                    <div class="tile is-child">
+                        <div class="box class-group">
+                            <p class="title">Maths</p>
+                            <p><span class="bold">Teacher: </span>Mr. Doe</p>
+                            <p><span class="bold">Assignments due: </span>3</p>
+                            <p><span class="bold">Overdue: </span>1</p>
+                        </div>
+                    </div>
+
+                    <div class="tile is-child">
+                        <div class="box class-group">
+                            <p class="title">Biology</p>
+                            <p><span class="bold">Teacher: </span>Mr. Doe</p>
+                            <p><span class="bold">Assignments due: </span>3</p>
+                            <p><span class="bold">Overdue: </span>1</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tile is-vertical is-parent">
+                    <div class="tile is-child">
+                        <div class="box class-group">
+                            <p class="title">Geography</p>
+                            <p><span class="bold">Teacher: </span>Ms. Doe</p>
+                            <p><span class="bold">Assignments due: </span>1</p>
+                            <p><span class="bold">Overdue: </span>6</p>
+                        </div>
+                    </div>
+                </div>
+
+                
+            
+            </div>
+
+        </section>
+    </div>
+
+
+
+    <!-- <div class="container is-fluid">
+        <h1 class="title">Welcome, {{ user_info.first_name }} {{ user_info.surname }}</h1>
+        <p class="content">Username: {{ user_info.username }}</p>
+        <p class="content">Year group: {{ user_info.year_group }}</p>
+
+        <h1 class="title">Welcome, Abdul</h1>
+        <p class="content">Username: abdul.a_s</p>
+        <p class="content">Year group: 13B</p>
+    </div>
+
+    <div id="class-groups" class="container">
+        <div class="class-group box">
+            <p class="title">Maths</p>
+            <p><span class="subtitle">Teacher: </span>Mr. Doe</p>
+        </div>
+    </div> -->
+
+
+</body>
+</html>

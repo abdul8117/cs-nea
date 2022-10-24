@@ -15,11 +15,26 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 @app.route("/")
-# @login_required
+@login_required
 def index():
     # TODO
-    return redirect("/login")
+    # if session["user_info"] == "student":
+    #     redirect("/student-home")
+    # elif session["user-info"] == "teacher":
+    #     redirect("/teacher-home")
+    # else:
+    #     # what if the form was meddled with?
+    #     pass
 
+    print("ALREADY LOGGED IN")
+
+    return redirect("/student-home")
+
+        
+@app.route("/student-home")
+@login_required
+def student_home():
+    return render_template("student_home.html", user_info=session["user_info"])
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -46,9 +61,19 @@ def login():
         if not(username and password):
             return redirect("/login")
 
+        db_user = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()[0]
+        print(db_user)
+
+        user_login_info = {
+            "username": username,
+            "email": db_user[1],
+            "first_name": db_user[2],
+            "surname": db_user[3]
+        } # TODO validation
+
         if "_s" in username:
             try:
-                db_username = cur.execute("SELECT username FROM students WHERE username = ?", [username]).fetchone()[0]
+                db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()
             except:
                 return render_template("test_page.html", error="USERNAME DOES NOT MATCH")
 
@@ -92,9 +117,7 @@ def login():
             print("// PASSWORD DOES NOT MATCH.")
             return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
 
-        
-        return render_template("test_success.html")
-
+        return redirect("/")
 
     else:
         return render_template("login.html")
@@ -168,20 +191,26 @@ def register():
         password = security.generate_password_hash(password)
 
         # Insert into DB
-        details = (username, email, first_name, surname, password, None)
+        if account_type == "student":
+            details = (username, email, first_name, surname, password, None)
+        elif account_type == "teacher":
+            details = (username, email, first_name, surname, password)
         insert_user_to_database(details, account_type)
 
         session["user_info"] = {
             "username": username,
             "first_name": first_name,
             "surname": surname,
+            "account_type": account_type,
             "year_group": None # chosen by a student after registration
         }
 
-        if session["user_info"]["username"][-1] == "t":
-            return render_template("teacher_home.html", details=session["user_info"])
-        else:
-            return render_template("student_home.html", details=session["user_info"])
+        return redirect("/")
+
+        # if session["user_info"]["username"][-1] == "t":
+        #     return render_template("teacher_home.html", details=session["user_info"])
+        # else:
+        #     return render_template("student_home.html", details=session["user_info"])
 
     else:
         # Page accessed via a GET request

@@ -1,3 +1,72 @@
-Registered as {{ details.first_name }} {{ details.surname }} <br>
-Password is {{ details.password }} <br>
-You are a {{ details.account_type }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <title>Student Home</title>
+
+    <style>
+        .bold {
+            font-weight: bold;
+        }
+
+        .not-bold {
+            font-weight: normal !important;
+        }
+    </style>
+
+</head>
+<body>
+    <br>
+    <div class="nocontainer is-fluid">
+        <section class="section">
+            <h1 class="title">Welcome, Doe</h1>
+            <p><span class="bold">Username: </span>j.doe_t</p>
+            <p><span class="bold">Assignments received since last login: </span>3</p>
+        </section>
+        
+        <section class="section">
+            <h1 class="title">Your classes</h1>
+            <div class="tile is-ancestor">
+                <div class="tile is-vertical is-parent">
+                    <div class="tile is-child">
+                        <div class="box class-group">
+                            <p class="title">Maths <span class="not-bold">Year 9A</span></p>
+                            <p><span class="bold">No. of students: </span>18</p>
+                            <p><span class="bold">No. of due assignments: </span>1</p>
+                            <p><span class="bold">No. of assignments received since check: </span>4</p>
+                        </div>
+                    </div>
+
+                    <div class="tile is-child">
+                        <div class="box class-group">
+                            <p class="title">Biology <span class="not-bold">Year 11B</span></p>
+                            <p><span class="bold">No. of students: </span>21</p>
+                            <p><span class="bold">No. of assignments due: </span>2</p>
+                            <p><span class="bold">No. of assignments received since check: </span>8</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tile is-vertical is-parent">
+                    <div class="tile is-child">
+                        <div class="box class-group">
+                            <p class="title">Geography <span class="not-bold">Year 12</span></p>
+                            <p><span class="bold">No. of students: </span>4</p>
+                            <p><span class="bold">No. of assignments due: </span>0</p>
+                            <p><span class="bold">No. of assignments received since check: </span>0</p>
+                        </div>
+                    </div>
+                </div>
+
+                
+            
+            </div>
+
+        </section>
+    </div>
+
+</body>
+</html>
