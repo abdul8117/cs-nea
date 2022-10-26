@@ -1,0 +1,7 @@
+.bold {
+    font-weight: bold;
+}
+
+.not-bold {
+    font-weight: normal !important;
+}

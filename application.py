@@ -28,13 +28,24 @@ def index():
 
     print("ALREADY LOGGED IN")
 
-    return redirect("/student-home")
+    if session["account_type"] == "student":
+        return redirect("/student")
+    else:
+        return redirect("/teacher")
 
         
-@app.route("/student-home")
+@app.route("/student")
 @login_required
 def student_home():
     return render_template("student_home.html", user_info=session["user_info"])
+
+
+@app.route("/teacher")
+# @login_required
+def teacher_home():
+    print(session)
+    return render_template("teacher_home.html", user_info=session["user_info"])
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -59,6 +70,7 @@ def login():
         cur = con.cursor()
 
         if not(username and password):
+            print("username or password not given")
             return redirect("/login")
 
         db_user = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()[0]
@@ -68,12 +80,14 @@ def login():
             "username": username,
             "email": db_user[1],
             "first_name": db_user[2],
-            "surname": db_user[3]
+            "surname": db_user[3],
+            "account_type": None
         } # TODO validation
 
         if "_s" in username:
             try:
                 db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()
+                user_login_info["account_type"] = "student"
             except:
                 return render_template("test_page.html", error="USERNAME DOES NOT MATCH")
 
@@ -86,6 +100,7 @@ def login():
         
         elif "_t" in username:
             db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
+            user_login_info["account_type"] = "teacher"
             db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
             # key = cur.execute("SELECT key FROM teachers WHERE username = ?", [username]).fetchone()[0]
             # salt = cur.execute("SELECT salt FROM teachers where username = ?", [username]).fetchone()[0]
@@ -117,7 +132,9 @@ def login():
             print("// PASSWORD DOES NOT MATCH.")
             return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
 
-        return redirect("/")
+        session["user_info"] = user_login_info
+
+        return redirect("/student")
 
     else:
         return render_template("login.html")
@@ -202,7 +219,7 @@ def register():
             "first_name": first_name,
             "surname": surname,
             "account_type": account_type,
-            "year_group": None # chosen by a student after registration
+            "year_group": None
         }
 
         return redirect("/")
@@ -215,3 +232,10 @@ def register():
     else:
         # Page accessed via a GET request
         return render_template("register.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+
+    return redirect("/") 

@@ -1,25 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <title>Student Home</title>
+{% extends "layout.html" %}
 
-    <style>
-        .bold {
-            font-weight: bold;
-        }
-    </style>
+{% block title %}
+    Student Home
+{% endblock %}
 
-</head>
-<body>
-    <br>
-    <div class="nocontainer is-fluid">
+
+{% block main %}
         <section class="section">
-            <h1 class="title">Welcome, Abdul</h1>
-            <p><span class="bold">Username: </span>abdul.a_s</p>
+            <h1 class="title">Welcome, {{ user_info.first_name.capitalize() }}</h1>
+            <p><span class="bold">Username: </span>{{ user_info.username }}</p>
             <p><span class="bold">Year group: </span>13B</p>
         </section>
         
@@ -64,25 +53,4 @@
         </section>
     </div>
 
-
-
-    <!-- <div class="container is-fluid">
-        <h1 class="title">Welcome, {{ user_info.first_name }} {{ user_info.surname }}</h1>
-        <p class="content">Username: {{ user_info.username }}</p>
-        <p class="content">Year group: {{ user_info.year_group }}</p>
-
-        <h1 class="title">Welcome, Abdul</h1>
-        <p class="content">Username: abdul.a_s</p>
-        <p class="content">Year group: 13B</p>
-    </div>
-
-    <div id="class-groups" class="container">
-        <div class="class-group box">
-            <p class="title">Maths</p>
-            <p><span class="subtitle">Teacher: </span>Mr. Doe</p>
-        </div>
-    </div> -->
-
-
-</body>
-</html>
+{% endblock %}
