@@ -132,9 +132,30 @@ def login():
             print("// PASSWORD DOES NOT MATCH.")
             return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
 
-        session["user_info"] = user_login_info
 
-        return redirect("/student")
+        if "_s" in username: 
+            session["user_info"] = {
+                "username": username,
+                "email": email,
+                "first_name": cur.execute("SELECT first_name FROM students WHERE username = ?", [username]).fetchone()[0],
+                "surname": cur.execute("SELECT surname FROM students WHERE username = ?", [username]).fetchone()[0],
+                "account_type": "student",
+                "year_group": cur.execute("SELECT year_group FROM students WHERE username = ?", [username]).fetchone()[0],
+                "section": cur.execute("SELECT section FROM students WHERE username = ?", [username]).fetchone()[0],
+            }
+            
+            return redirect("/student")
+        else:
+            session["user_info"] = {
+                "username": username,
+                "email": email,
+                "first_name": cur.execute("SELECT first_name FROM teachers WHERE username = ?", [username]).fetchone()[0],
+                "surname": cur.execute("SELECT surname FROM teachers WHERE username = ?", [username]).fetchone()[0],
+                "account_type": "teacher",
+                "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0]
+            }
+
+            return redirect("/teacher")
 
     else:
         return render_template("login.html")
@@ -214,13 +235,26 @@ def register():
             details = (username, email, first_name, surname, password)
         insert_user_to_database(details, account_type)
 
-        session["user_info"] = {
-            "username": username,
-            "first_name": first_name,
-            "surname": surname,
-            "account_type": account_type,
-            "year_group": None
-        }
+        if account_type == "student": 
+            session["user_info"] = {
+                "username": username,
+                "email": email,
+                "first_name": first_name,
+                "surname": surname,
+                "account_type": account_type,
+                "year_group": year_group,
+                "section": section # TODO
+            }
+        else:
+            session["user_info"] = {
+                "username": username,
+                "email": email,
+                "first_name": first_name,
+                "surname": surname,
+                "account_type": account_type,
+                "suffix": suffix # TODO
+            }
+            
 
         return redirect("/")
 
