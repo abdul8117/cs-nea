@@ -266,6 +266,11 @@ def profile():
     return render_template("profile.html", user_info=session["user_info"])
 
 
+@app.route("/assignments")
+def assignments():
+    return render_template("assignments_student.html", user_info=session["user_info"])
+
+
 @app.route("/class")
 def class_():
     # TODO
@@ -273,3 +278,5 @@ def class_():
     class_info = None 
 
     return render_template("class_student.html", user_info=session["user_info"], class_info=class_info)
+
+
