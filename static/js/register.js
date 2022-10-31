@@ -94,9 +94,36 @@
 // }
 
 
+const studentFormTab = document.querySelector("#student-form-tab");
 const studentForm = document.querySelector("#student-form");
-const teacherForm = document.querySelector("teacher-form");
+const teacherFormTab = document.querySelector("#teacher-form-tab");
+const teacherForm = document.querySelector("#teacher-form");
 
-studentForm.onclick = function toggleStudentForm() {
-    // TODO
+
+studentFormTab.onclick = function toggleStudentForm() {
+    if (studentForm.style.display == "none") {
+        studentForm.style.display = "block";
+        teacherForm.style.display = "none";
+        studentFormTab.classList.toggle("is-active");
+        teacherFormTab.classList.toggle("is-active");
+    } else {
+        studentForm.style.display = "none";
+        teacherForm.style.display = "block";
+        studentFormTab.classList.toggle("is-active");
+        teacherFormTab.classList.toggle("is-active");
+    }
+}
+
+teacherFormTab.onclick = function toggleTeacherForm() {
+    if (teacherForm.style.display == "none") {
+        studentForm.style.display = "none";
+        teacherForm.style.display = "block";
+        studentFormTab.classList.toggle("is-active");
+        teacherFormTab.classList.toggle("is-active");
+    } else {
+        studentForm.style.display = "block";
+        teacherForm.style.display = "none";
+        studentFormTab.classList.toggle("is-active");
+        teacherFormTab.classList.toggle("is-active");
+    }
 }

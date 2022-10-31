@@ -11,11 +11,11 @@
 
 <body>
     <br>
-    <div class="container is-fluid">
+    <section class="section">
         <h1 class="title">Lorem Ipsum</h1>
-    </div>
+    </section>
        
-    <div class="container is-fluid">
+    <section class="section" style="padding-top:0;">
 
         <div class="tabs is-large">
             <ul>
@@ -26,12 +26,12 @@
 
         <div class="tabs is-medium">
             <ul>
-                <li id="student-form" class="is-active"><a>Student</a></li>
-                <li id="teacher-form"><a>Teacher</a></li>
+                <li id="student-form-tab" class="is-active"><a>Student</a></li>
+                <li id="teacher-form-tab"><a>Teacher</a></li>
             </ul>
         </div>
 
-        <form action="/register_student" method="post">
+        <form action="/register_student" method="post" id="student-form">
             <div id="name-fields" class="field">
                 <div class="field">
                     <label for="" class="label">First name</label>
@@ -111,8 +111,22 @@
         </form>
 
 
-        <form action="/register_teacher" method="post" style="display: none;">
+        <form action="/register_teacher" method="post" id="teacher-form" style="display:none;">
             <div id="name-fields" class="field">
+                <div class="field">
+                    <label for="" class="label">Suffix</label>
+                    <div class="control">
+                        <div class="select">
+                            <select name="suffix" id="">
+                                <option value="">Select your suffix</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Ms.">Ms.</option>
+                                <option value="Mx.">Mx.</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="field">
                     <label for="" class="label">First name</label>
                     <div class="control">
@@ -150,41 +164,18 @@
             </div>
 
             <div>
-                <button class="button is-primary" name="account_type" value="student">
+                <button id="teacher-button" class="button is-primary" name="account_type" value="teacher">
                     <span class="icon">
-                        <i class="fa-solid fa-lg fa-graduation-cap"></i>
+                        <i class="fa-solid fa-lg fa-chalkboard-user"></i>
                     </span>
-                    <span>Register as student</span>
+                    <span>Register as teacher</span>
                 </button>
             </div>
-            
-
-            <!-- <div id="year-group-dropdown" style="display:none;">
-                <label for="">Year group</label>
-                <br>
-                <div class="select">
-                    <select name="year-group" id="">
-                        <option value="">Select your year group</option>
-                        <option value="7">Year 7</option>
-                        <option value="8">Year 8</option>
-                        <option value="9">Year 9</option>
-                        <option value="10">Year 10</option>
-                        <option value="11">Year 11</option>
-                        <option value="12">Year 12</option>
-                        <option value="13">Year 13</option>
-                    </select>
-                </div>
-            </div>
-            <br> -->
-
-            <!-- <div class="control">
-                <input type="submit" value="Register" class="button is-primary">
-            </div> -->
 
             <br>
         </form>
     
-    </div>
+    </section>
 
     <script src="../static/js/register.js"></script>
     <!-- Font Awesome -->
