@@ -9,7 +9,7 @@
         <section class="section">
             <h1 class="title">Welcome, {{ user_info.first_name.capitalize() }}</h1>
             <p><span class="bold">Username: </span>{{ user_info.username }}</p>
-            <p><span class="bold">Year group: </span>13B</p>
+            <p><span class="bold">Year group: </span>{{ user_info.year_group }}{{ user_info.section }}</p>
         </section>
         
         <section class="section">

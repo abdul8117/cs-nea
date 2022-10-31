@@ -28,7 +28,9 @@ def index():
 
     print("ALREADY LOGGED IN")
 
-    if session["account_type"] == "student":
+    print(session)
+
+    if session["user_info"]["account_type"] == "student":
         return redirect("/student")
     else:
         return redirect("/teacher")
@@ -37,14 +39,14 @@ def index():
 @app.route("/student")
 @login_required
 def student_home():
-    return render_template("student_home.html", user_info=session["user_info"])
+    return render_template("home_student.html", user_info=session["user_info"])
 
 
 @app.route("/teacher")
 # @login_required
 def teacher_home():
     print(session)
-    return render_template("teacher_home.html", user_info=session["user_info"])
+    return render_template("home_teacher.html", user_info=session["user_info"])
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -76,35 +78,21 @@ def login():
         db_user = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()[0]
         print(db_user)
 
-        user_login_info = {
-            "username": username,
-            "email": db_user[1],
-            "first_name": db_user[2],
-            "surname": db_user[3],
-            "account_type": None
-        } # TODO validation
+        # user_login_info = {
+        #     "username": username,
+        #     "email": db_user[1],
+        #     "first_name": db_user[2],
+        #     "surname": db_user[3],
+        #     "account_type": None
+        # } # TODO validation
+
 
         if "_s" in username:
-            try:
-                db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()
-                user_login_info["account_type"] = "student"
-            except:
-                return render_template("test_page.html", error="USERNAME DOES NOT MATCH")
-
-            try:
-                db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
-                # key = cur.execute("SELECT key FROM students WHERE username = ?", [username]).fetchone()[0]
-                # salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
-            except:
-                return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
-        
+            db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchone()[0]
+            db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]        
         elif "_t" in username:
             db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            user_login_info["account_type"] = "teacher"
-            db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            # key = cur.execute("SELECT key FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            # salt = cur.execute("SELECT salt FROM teachers where username = ?", [username]).fetchone()[0]
-        
+            db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]        
         else:
             db_username = None
             db_password = None
@@ -120,23 +108,20 @@ def login():
         # print(f"DB KEY {key}")
         print("\n\n\n")
 
-        # hash_form_pw = vernam_cipher.encrypt(str(hash(password + salt)), key)
-        # print(hash_form_pw)
-
-        if not(db_username):
-            # username not found
-            print("// USERNAME DOES NOT MATCH.")
-            return render_template("test_page.html", error="USERNAME NOT FOUND")
-        elif not(security.check_password_hash(db_password, password)):
-            # password is wrong
-            print("// PASSWORD DOES NOT MATCH.")
-            return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
+        # if not(db_username):
+        #     # username not found
+        #     print("// USERNAME DOES NOT MATCH.")
+        #     return render_template("test_page.html", error="USERNAME NOT FOUND")
+        # elif not(security.check_password_hash(db_password, password)):
+        #     # password is wrong
+        #     print("// PASSWORD DOES NOT MATCH.")
+        #     return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
 
 
         if "_s" in username: 
             session["user_info"] = {
                 "username": username,
-                "email": email,
+                "email": None, # TODO
                 "first_name": cur.execute("SELECT first_name FROM students WHERE username = ?", [username]).fetchone()[0],
                 "surname": cur.execute("SELECT surname FROM students WHERE username = ?", [username]).fetchone()[0],
                 "account_type": "student",
@@ -148,11 +133,11 @@ def login():
         else:
             session["user_info"] = {
                 "username": username,
-                "email": email,
+                "email": None, # TODO
                 "first_name": cur.execute("SELECT first_name FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "surname": cur.execute("SELECT surname FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "account_type": "teacher",
-                "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0]
+                # "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0] # TODO
             }
 
             return redirect("/teacher")
@@ -252,16 +237,16 @@ def register():
                 "first_name": first_name,
                 "surname": surname,
                 "account_type": account_type,
-                "suffix": suffix # TODO
+                "suffix": None # TODO
             }
             
 
         return redirect("/")
 
         # if session["user_info"]["username"][-1] == "t":
-        #     return render_template("teacher_home.html", details=session["user_info"])
+        #     return render_template("home_teacher.html", details=session["user_info"])
         # else:
-        #     return render_template("student_home.html", details=session["user_info"])
+        #     return render_template("home_student.html", details=session["user_info"])
 
     else:
         # Page accessed via a GET request
@@ -272,4 +257,19 @@ def register():
 def logout():
     session.clear()
 
-    return redirect("/") 
+    return redirect("/")
+
+
+@app.route("/profile")
+def profile():
+    # TODO
+    return render_template("profile.html", user_info=session["user_info"])
+
+
+@app.route("/class")
+def class_():
+    # TODO
+    # class_info variable will be data from the database
+    class_info = None 
+
+    return render_template("class_student.html", user_info=session["user_info"], class_info=class_info)

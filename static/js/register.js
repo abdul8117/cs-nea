@@ -51,46 +51,52 @@
 // }
 
 
+// const studentRadio = document.querySelector("#student-radio");
+// const teacherRadio = document.querySelector("#teacher-radio");
+// const yearGroupDropdown = document.querySelector("#year-group-dropdown");
+
+// function showYearGroups() {
+//     // show the year group dropdown list
+//     yearGroupDropdown.style.display = "block";
+// }
+
+// function hideYearGroups() {
+//     // hide the year groups dropdown list
+//     yearGroupDropdown.style.display = "none";
+// }
 
 
-const studentRadio = document.querySelector("#student-radio");
-const teacherRadio = document.querySelector("#teacher-radio");
-const yearGroupDropdown = document.querySelector("#year-group-dropdown");
+// const studentButton = document.querySelector("#student-button")
+// const teacherButton = document.querySelector("#teacher-button")
 
-function showYearGroups() {
-    // show the year group dropdown list
-    yearGroupDropdown.style.display = "block";
-}
-
-function hideYearGroups() {
-    // hide the year groups dropdown list
-    yearGroupDropdown.style.display = "none";
-}
-
-
-const studentButton = document.querySelector("#student-button")
-const teacherButton = document.querySelector("#teacher-button")
-
-studentButton.onclick = function toggleStudentButton() {
-    // add the is-dark class to the button's class list and display the year group dropdown
-    studentButton.classList.toggle("is-dark");
+// studentButton.onclick = function toggleStudentButton() {
+//     // add the is-dark class to the button's class list and display the year group dropdown
+//     studentButton.classList.toggle("is-dark");
     
-    if (yearGroupDropdown.style.display == "none") {
-        yearGroupDropdown.style.display = "block";
-    } else {
-        yearGroupDropdown.style.display == "none";
-    }
+//     if (yearGroupDropdown.style.display == "none") {
+//         yearGroupDropdown.style.display = "block";
+//     } else {
+//         yearGroupDropdown.style.display == "none";
+//     }
 
-    if (teacherButton.classList.contains("is-dark")) {
-        teacherButton.classList.toggle("is-dark");
-    }
-}
+//     if (teacherButton.classList.contains("is-dark")) {
+//         teacherButton.classList.toggle("is-dark");
+//     }
+// }
 
-teacherButton.onclick = function toggleteacherButton() {
-    teacherButton.classList.toggle("is-dark");
-    yearGroupDropdown.style.display = "none";
+// teacherButton.onclick = function toggleteacherButton() {
+//     teacherButton.classList.toggle("is-dark");
+//     yearGroupDropdown.style.display = "none";
 
-    if (studentButton.classList.contains("is-dark")) {
-        studentButton.classList.toggle("is-dark");
-    }
+//     if (studentButton.classList.contains("is-dark")) {
+//         studentButton.classList.toggle("is-dark");
+//     }
+// }
+
+
+const studentForm = document.querySelector("#student-form");
+const teacherForm = document.querySelector("teacher-form");
+
+studentForm.onclick = function toggleStudentForm() {
+    // TODO
 }
