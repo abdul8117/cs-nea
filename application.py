@@ -5,7 +5,7 @@ from werkzeug import security
 import sqlite3
 
 from helpers import login_required, generate_salt, create_username, insert_user_to_database
-import vernam_cipher
+# import vernam_cipher
 
 app = Flask(__name__)
 
@@ -20,7 +20,7 @@ def index():
     # TODO
     # if session["user_info"] == "student":
     #     redirect("/student-home")
-    # elif session["user-info"] == "teacher":
+    # elif session["user_info"] == "teacher":
     #     redirect("/teacher-home")
     # else:
     #     # what if the form was meddled with?
@@ -43,7 +43,7 @@ def student_home():
 
 
 @app.route("/teacher")
-# @login_required
+@login_required
 def teacher_home():
     print(session)
     return render_template("home_teacher.html", user_info=session["user_info"])
