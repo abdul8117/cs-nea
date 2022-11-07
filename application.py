@@ -8,6 +8,7 @@ from helpers import login_required, generate_salt, create_username, insert_user_
 # import vernam_cipher
 
 app = Flask(__name__)
+con = sqlite3.connect("db/database.db", check_same_thread=False)
 
 # Session config
 app.config["SESSION_PERMANENT"] = False
@@ -35,10 +36,28 @@ def index():
     else:
         return redirect("/teacher")
 
-        
+
 @app.route("/student")
 @login_required
 def student_home():
+
+    print(session)
+
+
+    # Get all class details from the database
+    # teacher name, number of assignments due, number of overdue assignments
+
+
+    # Query students_in_classes where username matches with the user logged in.
+
+    cur = con.cursor()
+    classes = cur.execute("SELECT * FROM students_in_classes WHERE username = ?", [session["user_info"]["username"]])
+
+
+
+
+
+
     return render_template("home_student.html", user_info=session["user_info"])
 
 
@@ -67,16 +86,15 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # connect to database
-        con = sqlite3.connect("db/database.db")
+        # create a cursor to the database
         cur = con.cursor()
 
         if not(username and password):
             print("username or password not given")
             return redirect("/login")
 
-        db_user = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()[0]
-        print(db_user)
+        # db_user = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchall()[0]
+        # print(db_user)
 
         # user_login_info = {
         #     "username": username,
@@ -139,11 +157,15 @@ def login():
                 "account_type": "teacher",
                 # "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0] # TODO
             }
-
+            
             return redirect("/teacher")
+
+        cur.close()
 
     else:
         return render_template("login.html")
+
+
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -163,8 +185,15 @@ def register():
         email = request.form.get("email").lower().strip()
         password = request.form.get("password")
         confirm_password = request.form.get("confirm-password")
-        # year_group = request.form.get("year-group")
         account_type = request.form.get("account_type")
+
+        if account_type == "student":
+            year_group = request.form.get("year-group")
+            section = request.form.get("section") # TODO validation
+        else:
+            suffix = request.form.get("suffix")
+
+
 
         print(f"ACCOUNT TYPE: {account_type}")
 
@@ -215,38 +244,33 @@ def register():
 
         # Insert into DB
         if account_type == "student":
-            details = (username, email, first_name, surname, password, None)
+            details = (username, first_name, surname, email, password, year_group, section)
         elif account_type == "teacher":
-            details = (username, email, first_name, surname, password)
+            details = (username, first_name, surname, suffix, email, password)
         insert_user_to_database(details, account_type)
 
         if account_type == "student": 
             session["user_info"] = {
                 "username": username,
-                "email": email,
                 "first_name": first_name,
                 "surname": surname,
-                "account_type": account_type,
+                "email": email,
                 "year_group": year_group,
-                "section": section # TODO
+                "section": section,
+                "account_type": account_type
             }
         else:
             session["user_info"] = {
                 "username": username,
-                "email": email,
                 "first_name": first_name,
                 "surname": surname,
-                "account_type": account_type,
-                "suffix": None # TODO
+                "suffix": suffix,
+                "email": email,
+                "account_type": account_type
             }
             
 
         return redirect("/")
-
-        # if session["user_info"]["username"][-1] == "t":
-        #     return render_template("home_teacher.html", details=session["user_info"])
-        # else:
-        #     return render_template("home_student.html", details=session["user_info"])
 
     else:
         # Page accessed via a GET request
