@@ -4,8 +4,7 @@ from werkzeug import security
 
 import sqlite3
 
-from helpers import login_required, generate_salt, create_username, insert_user_to_database
-# import vernam_cipher
+from helpers import login_required, create_username, insert_user_to_database
 
 app = Flask(__name__)
 con = sqlite3.connect("db/database.db", check_same_thread=False)
@@ -18,20 +17,12 @@ Session(app)
 @app.route("/")
 @login_required
 def index():
-    # TODO
-    # if session["user_info"] == "student":
-    #     redirect("/student-home")
-    # elif session["user_info"] == "teacher":
-    #     redirect("/teacher-home")
-    # else:
-    #     # what if the form was meddled with?
-    #     pass
 
     print("ALREADY LOGGED IN")
 
     print(session)
 
-    if session["user_info"]["account_type"] == "student":
+    if session["user_info"]["is_student"]:
         return redirect("/student")
     else:
         return redirect("/teacher")
@@ -43,17 +34,15 @@ def student_home():
 
     print(session)
 
-
     # Get all class details from the database
     # teacher name, number of assignments due, number of overdue assignments
-
 
     # Query students_in_classes where username matches with the user logged in.
 
     cur = con.cursor()
     classes = cur.execute("SELECT * FROM students_in_classes WHERE username = ?", [session["user_info"]["username"]])
 
-
+    print(classes.fetchall())
 
 
 
@@ -139,12 +128,12 @@ def login():
         if "_s" in username: 
             session["user_info"] = {
                 "username": username,
-                "email": None, # TODO
                 "first_name": cur.execute("SELECT first_name FROM students WHERE username = ?", [username]).fetchone()[0],
                 "surname": cur.execute("SELECT surname FROM students WHERE username = ?", [username]).fetchone()[0],
-                "account_type": "student",
+                "email": cur.execute("SELECT email FROM students WHERE username = ?", [username]).fetchone()[0],
                 "year_group": cur.execute("SELECT year_group FROM students WHERE username = ?", [username]).fetchone()[0],
                 "section": cur.execute("SELECT section FROM students WHERE username = ?", [username]).fetchone()[0],
+                "is_student": True,
             }
             
             return redirect("/student")
@@ -154,7 +143,7 @@ def login():
                 "email": None, # TODO
                 "first_name": cur.execute("SELECT first_name FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "surname": cur.execute("SELECT surname FROM teachers WHERE username = ?", [username]).fetchone()[0],
-                "account_type": "teacher",
+                "is_student": False,
                 # "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0] # TODO
             }
             
@@ -185,18 +174,14 @@ def register():
         email = request.form.get("email").lower().strip()
         password = request.form.get("password")
         confirm_password = request.form.get("confirm-password")
-        account_type = request.form.get("account_type")
-
-        if account_type == "student":
+        
+        if request.form.get("account_type") == "student":
+            is_student = True
             year_group = request.form.get("year-group")
-            section = request.form.get("section") # TODO validation
+            section = request.form.get("section")
         else:
+            is_student = False
             suffix = request.form.get("suffix")
-
-
-
-        print(f"ACCOUNT TYPE: {account_type}")
-
         
         # First and surnames can only be one word and completely alphabetical
         if not(first_name and surname):
@@ -223,16 +208,16 @@ def register():
             return redirect("/register")
         
         # make sure the account type and year group was selected
-        if not(account_type):
-            print("Account type must be given")
-            redirect("/register")
+        # if not(account_type):
+            # print("Account type must be given")
+            # redirect("/register")
         # if not(year_group):
         #     print("Year group must be given")
         #     redirect("/register")
         
           
         # Create username
-        username = create_username(first_name, surname, account_type)
+        username = create_username(first_name, surname, is_student)
         
         # Hash password using a salt, then encrypt it
         # salt = generate_salt()
@@ -243,13 +228,13 @@ def register():
         password = security.generate_password_hash(password)
 
         # Insert into DB
-        if account_type == "student":
+        if is_student:
             details = (username, first_name, surname, email, password, year_group, section)
-        elif account_type == "teacher":
+        else:
             details = (username, first_name, surname, suffix, email, password)
-        insert_user_to_database(details, account_type)
+        insert_user_to_database(details, is_student)
 
-        if account_type == "student": 
+        if is_student: 
             session["user_info"] = {
                 "username": username,
                 "first_name": first_name,
@@ -257,7 +242,7 @@ def register():
                 "email": email,
                 "year_group": year_group,
                 "section": section,
-                "account_type": account_type
+                "is_student": is_student
             }
         else:
             session["user_info"] = {
@@ -266,7 +251,7 @@ def register():
                 "surname": surname,
                 "suffix": suffix,
                 "email": email,
-                "account_type": account_type
+                "is_student": is_student
             }
             
 
@@ -292,7 +277,7 @@ def profile():
 
 @app.route("/assignments")
 def assignments():
-    return render_template("assignments_student.html", user_info=session["user_info"])
+    return render_template("all_assignments_student.html", user_info=session["user_info"])
 
 
 @app.route("/class")

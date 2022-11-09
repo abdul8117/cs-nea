@@ -12,9 +12,12 @@
 
     <section class="section" style="padding-top: 0;">
         <p><span class="bold">Name: </span>{{ user_info.first_name.capitalize() }} {{ user_info.surname.capitalize() }}</p>
+        <i class="fa-solid fa-pen"></i>
         <p><span class="bold">Username: </span>{{ user_info.username }}</p>
-        <p><span class="bold">Year group: </span>{{ user_info.year_group }}</p>
-        <p><span class="bold">Section: </span>{{ user_info.section.capitalize() }}</p>
+        {% if user_info.is_student %}
+            <p><span class="bold">Year group: </span>{{ user_info.year_group }}</p>
+            <p><span class="bold">Section: </span>{{ user_info.section.capitalize() }}</p>
+        {% endif %}
         <p><span class="bold">Email: </span>{{ user_info.email }}</p>
     </section>
 
