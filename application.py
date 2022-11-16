@@ -44,9 +44,6 @@ def student_home():
 
     print(classes.fetchall())
 
-
-
-
     return render_template("home_student.html", user_info=session["user_info"])
 
 
