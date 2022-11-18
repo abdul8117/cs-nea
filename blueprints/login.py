@@ -1,6 +1,7 @@
 from flask import Blueprint, request, redirect, render_template
+from flask_session import Session
 
-from helpers import login_required
+import sqlite3
 
 login_blueprint = Blueprint("login", __name__)
 
@@ -24,6 +25,7 @@ def login():
         password = request.form.get("password")
 
         # create a cursor to the database
+        con = sqlite3.connect("db/database.db", check_same_thread=False)
         cur = con.cursor()
 
         if not(username and password):

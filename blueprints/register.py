@@ -1,6 +1,5 @@
 from flask import Blueprint, request, redirect, render_template
-
-from helpers import login_required
+from flask_session import Session
 
 register_blueprint = Blueprint("register", __name__)
 
