@@ -6,11 +6,11 @@
 
 {% block main %}
 
-    <section class="section">
+    <section class="section" style="background-color: hsl(171, 100%, 41%);">
         <h1 class="title">Your Profile</h1>
     </section>
 
-    <section class="section" style="padding-top: 0;">
+    <section class="section">
         <p><span class="bold">Name: </span>{{ user_info.first_name.capitalize() }} {{ user_info.surname.capitalize() }}</p>
         <i class="fa-solid fa-pen"></i>
         <p><span class="bold">Username: </span>{{ user_info.username }}</p>

@@ -5,9 +5,8 @@
 {% endblock %}
 
 {% block main %}
-    <br>
-    <div class="nocontainer is-fluid">
-        <section class="section">
+    <!-- <div class="nocontainer is-fluid"> -->
+        <section class="section" style="background-color: hsl(171, 100%, 41%);">
             <h1 class="title">Welcome, {{ user_info.suffix }} {{ user_info.surname.capitalize() }}</h1>
             <p><span class="bold">Username: </span>{{ user_info.username }}</p>
             <p><span class="bold">Assignments received since last login: </span>3</p> # TODO
@@ -48,6 +47,6 @@
                 </div>
             </div>
         </section>
-    </div>
+    <!-- </div> -->
 
 {% endblock %}
