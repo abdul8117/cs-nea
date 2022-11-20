@@ -1,9 +1,9 @@
-from flask import Flask, Blueprint, request, redirect, render_template, session
+from flask import Flask, Blueprint, url_for, request, redirect, render_template, session
 from flask_session import Session
 
 import sqlite3
 
-auth_bp = Blueprint("auth", __name__)
+auth = Blueprint("auth", __name__)
 
 # auth = Flask(__name__)
 # auth.config["SESSION_PERMANENT"] = False
@@ -13,7 +13,7 @@ auth_bp = Blueprint("auth", __name__)
 
 
 
-@auth_bp.route("/register", methods=["GET", "POST"])
+@auth.route("/register", methods=["GET", "POST"])
 def register():
 
     """
@@ -21,7 +21,6 @@ def register():
     If the user is simply visiting the site, it is a GET request and the 'else' block of the selection below is executed.
     If the user had submitted a form, then a POST request is sent to the server where the form input will be handled.
     """
-
 
     if request.method == "POST":
 
@@ -43,13 +42,13 @@ def register():
         if not(first_name and surname):
             # checks if the name fields are not left blank
             print("Name(s) not given")
-            return redirect("/register")
+            return redirect(url_for("register"))
         elif not(first_name.isalpha() and surname.isalpha()):
             print("Name(s) must be completely alphabteical")
-            return redirect("/register")
+            return redirect(url_for("register"))
         elif len(first_name.split()) != 1 or len(surname.split()) != 1:
             print("Name(s) must be only one word")
-            return redirect("/register")
+            return redirect(url_for("register"))
         
         # email
         if not(email):
@@ -58,10 +57,10 @@ def register():
 
         # both password fields must be given
         if not(password and confirm_password):
-            redirect("/register")
+            redirect(url_for("register"))
         elif password != confirm_password:
             print("Passwords do not match")
-            return redirect("/register")
+            return redirect(url_for("register"))
         
         # make sure the account type and year group was selected
         # if not(account_type):
@@ -111,14 +110,14 @@ def register():
             }
             
 
-        return redirect("/")
+        return redirect(url_for("index"))
 
     else:
         # Page accessed via a GET request
         return render_template("register.html")
 
 
-@auth_bp.route("/login", methods=["GET", "POST"])
+@auth.route("/login", methods=["GET", "POST"])
 def login():
 
     """
@@ -142,7 +141,7 @@ def login():
 
         if not(username and password):
             print("username or password not given")
-            return redirect("/login")
+            return redirect(url_for("login"))
 
         if "_s" in username:
             db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchone()[0]
@@ -185,7 +184,7 @@ def login():
                 "is_student": True,
             }
             
-            return redirect("/home/student")
+            return redirect(url_for("home.student_home"))
         else:
             session["user_info"] = {
                 "username": username,
@@ -196,7 +195,7 @@ def login():
                 # "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0] # TODO
             }
             
-            return redirect("/teacher")
+            return redirect(url_for("home.teacher_home"))
 
         cur.close()
 
@@ -204,7 +203,7 @@ def login():
         return render_template("login.html")
 
 
-@auth_bp.route("/logout")
+@auth.route("/logout")
 def logout():
     session.clear()
     

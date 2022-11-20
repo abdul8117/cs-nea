@@ -1,10 +1,10 @@
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, url_for, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug import security
 
-from blueprints.auth import auth_bp
-from blueprints.home import home_bp
-from blueprints.profile import profile_bp
+from blueprints.auth import auth as auth_bp
+from blueprints.home import home as home_bp
+from blueprints.profile import profile as profile_bp
 
 from helpers import login_required, create_username, insert_user_to_database
 
@@ -26,22 +26,17 @@ Session(app)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(home_bp)
+app.register_blueprint(profile_bp)
 
 
-
-
+@app.route("/index")
 @app.route("/")
 @login_required
 def index():
-
-    print("ALREADY LOGGED IN")
-
-    print(session)
-
     if session["user_info"]["is_student"]:
-        return redirect("/student")
+        return redirect(url_for("home.student_home"))
     else:
-        return redirect("/teacher")
+        return redirect(url_for("home.teacher_home"))
 
 
 # @app.route("/student")
@@ -82,8 +77,8 @@ def index():
 #     return render_template("profile.html", user_info=session["user_info"])
 
 
-@app.route("/assignments")
-def assignments():
+@app.route("/home/student/assignments")
+def student_assignments():
     return render_template("all_assignments_student.html", user_info=session["user_info"])
 
 

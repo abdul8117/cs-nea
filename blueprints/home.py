@@ -5,17 +5,9 @@ import sqlite3
 
 from helpers import login_required
 
-home_bp = Blueprint("name", __name__, url_prefix="/home")
+home = Blueprint("home", __name__, url_prefix="/home")
 
-
-# home = Flask(__name__)
-# home.config["SESSION_PERMANENT"] = False
-# home.config["SESSION_TYPE"] = "filesystem"
-# home.config["SESSION_COOKIE_PATH"] = "/"
-# Session(home)
-
-
-@home_bp.route("/student")
+@home.route("/student")
 @login_required
 def student_home():
 
@@ -35,7 +27,7 @@ def student_home():
     return render_template("home_student.html", user_info=session["user_info"])
 
 
-@home_bp.route("/teacher")
+@home.route("/teacher")
 @login_required
 def teacher_home():
     print(session)
