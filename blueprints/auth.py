@@ -1,7 +1,9 @@
 from flask import Flask, Blueprint, url_for, request, redirect, render_template, session
 from flask_session import Session
 
-import sqlite3
+from helpers import create_username, generate_salt, insert_user_into_database
+
+import sqlite3, hashlib
 
 auth = Blueprint("auth", __name__)
 
@@ -10,8 +12,6 @@ auth = Blueprint("auth", __name__)
 # auth.config["SESSION_TYPE"] = "filesystem"
 # auth.config["SESSION_COOKIE_PATH"] = "/"
 # Session(auth)
-
-
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
@@ -61,42 +61,31 @@ def register():
         elif password != confirm_password:
             print("Passwords do not match")
             return redirect(url_for("register"))
-        
-        # make sure the account type and year group was selected
-        # if not(account_type):
-            # print("Account type must be given")
-            # redirect("/register")
-        # if not(year_group):
-        #     print("Year group must be given")
-        #     redirect("/register")
-        
-          
+
         # Create username
         username = create_username(first_name, surname, is_student)
         
         # Hash password using a salt, then encrypt it
-        # salt = generate_salt()
-        # hash_with_salt = hash(password + salt)
-        # key = generate_key(len(str(hash_with_salt)))
-        # encrypted_hash = vernam_cipher.encrypt(hash_with_salt, key)
-
-        password = security.generate_password_hash(password)
+        salt = generate_salt()
+        pw_hash = hashlib.sha512()
+        pw_hash.update(bytes(password + salt, encoding="utf-16"))
+        pw_hash = pw_hash.digest()
 
         # Insert into DB
         if is_student:
-            details = (username, first_name, surname, email, password, year_group, section)
+            details = (username, first_name, surname, year_group, section, email, pw_hash, salt)
         else:
-            details = (username, first_name, surname, suffix, email, password)
-        insert_user_to_database(details, is_student)
+            details = (username, first_name, surname, suffix, email, pw_hash, salt)
+        insert_user_into_database(details, is_student)
 
-        if is_student: 
+        if is_student:
             session["user_info"] = {
                 "username": username,
                 "first_name": first_name,
                 "surname": surname,
-                "email": email,
                 "year_group": year_group,
                 "section": section,
+                "email": email,
                 "is_student": is_student
             }
         else:
@@ -145,13 +134,16 @@ def login():
 
         if "_s" in username:
             db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchone()[0]
-            db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]        
+            db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
+            salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
         elif "_t" in username:
             db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]        
+            db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
+            salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
         else:
             db_username = None
             db_password = None
+            salt = None
  
 
         print("\n\n\n")
@@ -163,14 +155,17 @@ def login():
         # print(f"DB KEY {key}")
         print("\n\n\n")
 
-        # if not(db_username):
-        #     # username not found
-        #     print("// USERNAME DOES NOT MATCH.")
-        #     return render_template("test_page.html", error="USERNAME NOT FOUND")
-        # elif not(security.check_password_hash(db_password, password)):
-        #     # password is wrong
-        #     print("// PASSWORD DOES NOT MATCH.")
-        #     return render_template("test_page.html", error="PASSWORD DOES NOT MATCH")
+        pw_hash_check = hashlib.sha512()
+        pw_hash_check.update(bytes(password + salt, encoding="utf-16"))
+        
+        if not(db_username):
+            # username not found
+            print("// USERNAME DOES NOT MATCH.")
+            return render_template("apology.html", error="USERNAME NOT FOUND")
+        elif db_password != pw_hash_check.digest():
+            # password is wrong
+            print("// PASSWORD DOES NOT MATCH.")
+            return render_template("apology.html", error="PASSWORD DOES NOT MATCH")
 
 
         if "_s" in username: 
@@ -184,20 +179,23 @@ def login():
                 "is_student": True,
             }
             
+            cur.close()
+
             return redirect(url_for("home.student_home"))
         else:
             session["user_info"] = {
                 "username": username,
-                "email": None, # TODO
+                "email": cur.execute("SELECT email FROM teacchers WHERE username = ?", [username]).fetchone()[0],
                 "first_name": cur.execute("SELECT first_name FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "surname": cur.execute("SELECT surname FROM teachers WHERE username = ?", [username]).fetchone()[0],
+                "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "is_student": False,
-                # "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0] # TODO
             }
+            
+            cur.close()
             
             return redirect(url_for("home.teacher_home"))
 
-        cur.close()
 
     else:
         return render_template("login.html")

@@ -39,44 +39,6 @@ def index():
         return redirect(url_for("home.teacher_home"))
 
 
-# @app.route("/student")
-# @login_required
-# def student_home():
-
-#     print(session)
-
-#     # Get all class details from the database
-#     # teacher name, number of assignments due, number of overdue assignments
-
-#     # Query students_in_classes where username matches with the user logged in.
-
-#     cur = con.cursor()
-#     classes = cur.execute("SELECT * FROM students_in_classes WHERE username = ?", [session["user_info"]["username"]])
-
-#     print(classes.fetchall())
-
-#     return render_template("home_student.html", user_info=session["user_info"])
-
-
-# @app.route("/teacher")
-# @login_required
-# def teacher_home():
-#     print(session)
-#     return render_template("home_teacher.html", user_info=session["user_info"])
-
-# @app.route("/logout")
-# def logout():
-#     session.clear()
-
-#     return redirect("/")
-
-
-# @app.route("/profile")
-# def profile():
-#     # TODO
-#     return render_template("profile.html", user_info=session["user_info"])
-
-
 @app.route("/home/student/assignments")
 def student_assignments():
     return render_template("all_assignments_student.html", user_info=session["user_info"])

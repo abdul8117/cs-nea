@@ -81,14 +81,14 @@ def create_username(f_name, s_name, is_student):
         return f_name[0] + "." + s_name + "_t"
 
 
-def insert_user_to_database(details, is_student):
+def insert_user_into_database(details, is_student):
     import sqlite3
 
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
     if is_student:
-        cur.execute("INSERT INTO students (username, first_name, surname, email, password, year_group, section) VALUES (?, ?, ?, ?, ?, ?, ?)", details)
+        cur.execute("INSERT INTO students (username, first_name, surname, year_group, section, email, password, salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", details)
     else:
-        cur.execute("INSERT INTO teachers (username, first_name, surname, suffix, email, password) VALUES (?, ?, ?, ?, ?, ?)", details)
+        cur.execute("INSERT INTO teachers (username, first_name, surname, suffix, email, password, salt) VALUES (?, ?, ?, ?, ?, ?, ?)", details)
     con.commit()
     con.close()
