@@ -1,7 +1,8 @@
 from flask import Flask, Blueprint, url_for, request, redirect, render_template, session
 from flask_session import Session
 
-from helpers import create_username, generate_salt, insert_user_into_database
+from helpers import create_username, generate_salt
+from db_helpers import insert_user_into_database
 
 import sqlite3, hashlib
 
@@ -42,13 +43,13 @@ def register():
         if not(first_name and surname):
             # checks if the name fields are not left blank
             print("Name(s) not given")
-            return redirect(url_for("register"))
+            return redirect(url_for("auth.register"))
         elif not(first_name.isalpha() and surname.isalpha()):
             print("Name(s) must be completely alphabteical")
-            return redirect(url_for("register"))
+            return redirect(url_for("auth.register"))
         elif len(first_name.split()) != 1 or len(surname.split()) != 1:
             print("Name(s) must be only one word")
-            return redirect(url_for("register"))
+            return redirect(url_for("auth.register"))
         
         # email
         if not(email):
@@ -57,10 +58,10 @@ def register():
 
         # both password fields must be given
         if not(password and confirm_password):
-            redirect(url_for("register"))
+            redirect(url_for("auth.register"))
         elif password != confirm_password:
             print("Passwords do not match")
-            return redirect(url_for("register"))
+            return redirect(url_for("auth.register"))
 
         # Create username
         username = create_username(first_name, surname, is_student)
@@ -139,7 +140,7 @@ def login():
         elif "_t" in username:
             db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
             db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
+            salt = cur.execute("SELECT salt FROM teachers WHERE username = ?", [username]).fetchone()[0]
         else:
             db_username = None
             db_password = None
@@ -185,7 +186,7 @@ def login():
         else:
             session["user_info"] = {
                 "username": username,
-                "email": cur.execute("SELECT email FROM teacchers WHERE username = ?", [username]).fetchone()[0],
+                "email": cur.execute("SELECT email FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "first_name": cur.execute("SELECT first_name FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "surname": cur.execute("SELECT surname FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0],

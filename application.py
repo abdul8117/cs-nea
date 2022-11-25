@@ -6,7 +6,7 @@ from blueprints.auth import auth as auth_bp
 from blueprints.home import home as home_bp
 from blueprints.profile import profile as profile_bp
 
-from helpers import login_required, create_username, insert_user_to_database
+from helpers import login_required
 
 import sqlite3
 

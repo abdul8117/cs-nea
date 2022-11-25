@@ -13,3 +13,9 @@ html {
 /* section:nth-of-type(2) {
     background-color: #f5f5f5;
 } */
+
+.class-group:hover {
+    background-color: #e8e8e8;
+    /* border-color: #00d1b2; */
+    cursor: pointer;
+}

@@ -2,21 +2,6 @@ from flask import redirect, url_for, session
 
 from functools import wraps
 
-# def login_required(f):
-#     """
-#     https://flask.palletsprojects.com/en/2.2.x/patterns/viewdecorators/    
-#     """
-
-#     @wraps(f)
-#     def dec_function():
-#         if not(session.get("user_info")):
-#             # User is not logged in
-#             return redirect("/login")
-#         # User is logged in
-#         return f(*args, **kwargs)
-
-#     return dec_function
-
 
 def login_required(f):
     @wraps(f)
@@ -81,14 +66,3 @@ def create_username(f_name, s_name, is_student):
         return f_name[0] + "." + s_name + "_t"
 
 
-def insert_user_into_database(details, is_student):
-    import sqlite3
-
-    con = sqlite3.connect("db/database.db")
-    cur = con.cursor()
-    if is_student:
-        cur.execute("INSERT INTO students (username, first_name, surname, year_group, section, email, password, salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", details)
-    else:
-        cur.execute("INSERT INTO teachers (username, first_name, surname, suffix, email, password, salt) VALUES (?, ?, ?, ?, ?, ?, ?)", details)
-    con.commit()
-    con.close()

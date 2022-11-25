@@ -15,7 +15,7 @@
         <section class="section" style="background-color: #f5f5f5;">
             <h1 class="title">Your classes</h2>
             <div class="tile is-ancestor">
-                <div class="tile is-vertical is-parent">
+                <!-- <div class="tile is-vertical is-parent">
                     <div class="tile is-child">
                         <div class="box class-group">
                             <p class="title">Maths</p>
@@ -44,7 +44,32 @@
                             <p><span class="bold">Overdue: </span>6</p>
                         </div>
                     </div>
-                </div>
+                </div> -->
+
+
+                {% for i in range(num_of_rows // 2) %}
+                
+                    <div class="tile is-vertical is-parent">
+
+                        {% for j in classes %}
+                        
+                            <div class="tile is-child">
+                                <div class="box class-group">
+                                    <p class="title">{{ j[1] }}</p>
+                                    <p><span class="bold">Teacher: </span>{{ j[2] }}</p>
+                                    <p><span class="bold">Subject: </span>{{ j[4] }}</p>
+                                    <p><span class="bold">Assignments due: </span>TODO</p>
+                                    <p><span class="bold">Overdue: </span>TODO</p>  
+                                </div>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endfor %}
+
+
             </div>
 
         </section>
