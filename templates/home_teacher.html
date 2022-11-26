@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block main %}
-    <!-- <div class="nocontainer is-fluid"> -->
         <section class="section" style="background-color: hsl(171, 100%, 41%);">
             <h1 class="title">Welcome, {{ user_info.suffix }} {{ user_info.surname.capitalize() }}</h1>
             <p><span class="bold">Username: </span>{{ user_info.username }}</p>
@@ -15,7 +14,7 @@
         <section class="section">
             <h1 class="title">Your classes</h1>
             <div class="tile is-ancestor">
-                <div class="tile is-vertical is-parent">
+                <!-- <div class="tile is-vertical is-parent">
                     <div class="tile is-child">
                         <div class="box class-group">
                             <p class="title">Maths <span class="not-bold">Year 9A</span></p>
@@ -44,9 +43,24 @@
                             <p><span class="bold">No. of assignments received since last login: </span>0</p> # TODO
                         </div>
                     </div>
+                </div> -->
+
+                
+
+                <div class="tile is-vertical is-parent">
+                    {% for class in classes %}
+                        <div class="box class-group">
+                            <p class="title">{{ class[1] }}</p>
+                            <p><span class="bold">No. of students: </span>{{ class[-1] }}</p>
+                            <p><span class="bold">No. of assignments due: </span>TODO</p>
+                        </div>
+                    {% endfor %}
                 </div>
+
+
+
+
             </div>
         </section>
-    <!-- </div> -->
 
 {% endblock %}
