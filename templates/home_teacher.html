@@ -11,55 +11,32 @@
             <p><span class="bold">Assignments received since last login: </span>3</p> # TODO
         </section>
 
-        <section class="section">
+        <section class="section" style="background-color:#f5f5f5">
             <h1 class="title">Your classes</h1>
+
+            <div>
+                <button id="create-class-btn" class="button is-primary" name="create_class" value="teacher">
+                    <span class="icon">
+                        <i class="fa-solid fa-plus"></i>
+                    </span>
+                    <span>Create a class</span>
+                </button>
+            </div>
+
             <div class="tile is-ancestor">
-                <!-- <div class="tile is-vertical is-parent">
-                    <div class="tile is-child">
-                        <div class="box class-group">
-                            <p class="title">Maths <span class="not-bold">Year 9A</span></p>
-                            <p><span class="bold">No. of students: </span>18</p>
-                            <p><span class="bold">No. of due assignments: </span>1</p>
-                            <p><span class="bold">No. of assignments received since last login: </span>4</p>
-                        </div>
-                    </div>
-
-                    <div class="tile is-child">
-                        <div class="box class-group">
-                            <p class="title">Biology <span class="not-bold">Year 11B</span></p>
-                            <p><span class="bold">No. of students: </span>21</p>
-                            <p><span class="bold">No. of assignments due: </span>2</p>
-                            <p><span class="bold">No. of assignments received since last login: </span>8</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tile is-vertical is-parent">
-                    <div class="tile is-child">
-                        <div class="box class-group">
-                            <p class="title">Geography <span class="not-bold">Year 12</span></p>
-                            <p><span class="bold">No. of students: </span>4</p>
-                            <p><span class="bold">No. of assignments due: </span>0</p>
-                            <p><span class="bold">No. of assignments received since last login: </span>0</p> # TODO
-                        </div>
-                    </div>
-                </div> -->
-
-                
-
                 <div class="tile is-vertical is-parent">
                     {% for class in classes %}
-                        <div class="box class-group">
-                            <p class="title">{{ class[1] }}</p>
-                            <p><span class="bold">No. of students: </span>{{ class[-1] }}</p>
-                            <p><span class="bold">No. of assignments due: </span>TODO</p>
+                        <div class="tile is-child">
+                            <a href="teacher/class/{{ class[0] }}">
+                                <div class="box class-group">
+                                    <p class="title">{{ class[1] }}</p>
+                                    <p><span class="bold">No. of students: </span>{{ class[-1] }}</p>
+                                    <p><span class="bold">No. of assignments due: </span>TODO</p>
+                                </div>
+                            </a> 
                         </div>
                     {% endfor %}
                 </div>
-
-
-
-
             </div>
         </section>
 

@@ -17,23 +17,20 @@
             <div class="tile is-ancestor">
                 <div class="tile is-vertical is-parent">    
                     {% for j in classes %}
-                    
                         <div class="tile is-child">
-                            <div class="box class-group">
-                                <p class="title">{{ j[1] }}</p>
-                                <p><span class="bold">Teacher: </span>{{ j[2] }}</p>
-                                <p><span class="bold">Subject: </span>{{ j[4] }}</p>
-                                <p><span class="bold">Assignments due: </span>TODO</p>
-                                <p><span class="bold">Overdue: </span>TODO</p>  
-                            </div>
+                            <a href="/student/class/{{ j[0] }}">
+                                <div class="box class-group">
+                                    <p class="title">{{ j[1] }}</p>
+                                    <p><span class="bold">Teacher: </span>{{ j[2] }}</p>
+                                    <p><span class="bold">Subject: </span>{{ j[4] }}</p>
+                                    <p><span class="bold">Assignments due: </span>TODO</p>
+                                    <p><span class="bold">Overdue: </span>TODO</p>  
+                                </div>
+                            </a>
                         </div>
-
                     {% endfor %}
-
                 </div>
             </div>
-
         </section>
-    </div>
 
 {% endblock %}

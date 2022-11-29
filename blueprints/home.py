@@ -1,5 +1,4 @@
 from flask import Flask, Blueprint, render_template, request, session
-from flask_session import Session
 
 from math import ceil
 import sqlite3
@@ -66,9 +65,7 @@ def teacher_home():
     for i in range(len(classes)):
         num_of_students = cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [classes[i][0]]).fetchone()[0]
         classes[i].append(num_of_students)
-
-    
-    
+        
     print(classes)
 
     return render_template("home_teacher.html", user_info=session["user_info"], classes=classes)

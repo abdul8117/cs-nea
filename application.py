@@ -5,6 +5,7 @@ from werkzeug import security
 from blueprints.auth import auth as auth_bp
 from blueprints.home import home as home_bp
 from blueprints.profile import profile as profile_bp
+from blueprints.classes import classes as classes_bp
 
 from helpers import login_required
 
@@ -27,6 +28,7 @@ Session(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(home_bp)
 app.register_blueprint(profile_bp)
+app.register_blueprint(classes_bp)
 
 
 @app.route("/index")
@@ -42,14 +44,3 @@ def index():
 @app.route("/home/student/assignments")
 def student_assignments():
     return render_template("all_assignments_student.html", user_info=session["user_info"])
-
-
-@app.route("/class")
-def class_():
-    # TODO
-    # class_info variable will be data from the database
-    class_info = None 
-
-    return render_template("class_student.html", user_info=session["user_info"], class_info=class_info)
-
-
