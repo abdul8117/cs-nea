@@ -1,8 +1,8 @@
 from flask import Flask, Blueprint, url_for, request, redirect, render_template, session
 from flask_session import Session
 
-from helpers import create_username, generate_salt
-from db_helpers import insert_user_into_database
+from src.helpers import create_username, generate_salt
+from src.db_helpers import insert_user_into_database
 
 import sqlite3, hashlib
 

@@ -19,6 +19,7 @@ def get_subject_from_id(id):
 
     return subject
 
+
 def get_teacher_name(username):
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
@@ -27,3 +28,30 @@ def get_teacher_name(username):
     print(teacher_name)
 
     return teacher_name
+
+
+def get_class_info(class_id):
+    con = sqlite3.connect("db/database.db")
+    cur = con.cursor()
+
+    class_info = cur.execute("SELECT * FROM classes WHERE class_id = ?", [class_id]).fetchone()
+    print("\n\n\nCLASS INFO", class_info)
+    class_info = {
+        "class_id": class_id,
+        "title": class_info[1],
+        "teacher": class_info[2],
+        "subject": get_subject_from_id(class_info[3]),
+        "year_group": class_info[4],
+        "section": class_info[5]
+    }
+
+    class_info["class_size"] = get_class_size(class_id)
+
+    return class_info
+
+
+def get_class_size(class_id):
+    con = sqlite3.connect("db/database.db")
+    cur = con.cursor()
+
+    return cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [class_id]).fetchone()[0]

@@ -4,7 +4,7 @@ from flask import Flask, Blueprint, render_template, request, session
 
 import sqlite3
 
-from helpers import login_required
+from src.helpers import login_required
 
 profile = Blueprint("profile", __name__)
 

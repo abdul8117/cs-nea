@@ -64,5 +64,3 @@ def create_username(f_name, s_name, is_student):
         return f_name + "." + s_name[0] + "_s"
     else:
         return f_name[0] + "." + s_name + "_t"
-
-

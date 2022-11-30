@@ -2,12 +2,12 @@ from flask import Flask, url_for, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug import security
 
-from blueprints.auth import auth as auth_bp
-from blueprints.home import home as home_bp
-from blueprints.profile import profile as profile_bp
-from blueprints.classes import classes as classes_bp
+from src.blueprints.auth import auth as auth_bp
+from src.blueprints.home import home as home_bp
+from src.blueprints.profile import profile as profile_bp
+from src.blueprints.classes import classes as classes_bp
 
-from helpers import login_required
+from src.helpers import login_required
 
 import sqlite3
 

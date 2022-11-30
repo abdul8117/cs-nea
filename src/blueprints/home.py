@@ -3,8 +3,8 @@ from flask import Flask, Blueprint, render_template, request, session
 from math import ceil
 import sqlite3
 
-from helpers import login_required
-from db_helpers import get_subject_from_id, get_teacher_name
+from src.helpers import login_required
+from src.db_helpers import get_subject_from_id, get_teacher_name
 
 home = Blueprint("home", __name__, url_prefix="/home")
 
@@ -12,15 +12,12 @@ home = Blueprint("home", __name__, url_prefix="/home")
 @login_required
 def student_home():
 
-    # print(session)
-
     # Get all class details from the database
     # teacher name, number of assignments due, number of overdue assignments
 
     # Query students_in_classes where username matches with the user logged in.
 
     con = sqlite3.connect("db/database.db")
-    # con.row_factory = sqlite3.Row
     cur = con.cursor()
     sql_query = """SELECT classes.class_id, classes.title, classes.teacher, classes.subject_id 
                 FROM classes
@@ -28,7 +25,7 @@ def student_home():
                 WHERE students_in_classes.username = ?"""
     
     # columns: 
-    # class_id 0, title 1, teacher 2, subject_id 3, subject 4   
+    # class_id 0, title 1, teacher-username 2, subject_id 3, subject 4   
     classes = cur.execute(sql_query, [session["user_info"]["username"]])
     classes = classes.fetchall()
 
@@ -59,6 +56,7 @@ def teacher_home():
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
 
+    # 0 class id, 1 title, 2 teacher username, 3 subject id, 4 year_group, 5 section 
     classes = cur.execute("SELECT * FROM classes WHERE teacher = ?", [session["user_info"]["username"]]).fetchall()
     classes = [list(x) for x in classes]
 

@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {% if class_info.section %}
+        Class - Y{{ class_info.year_group }}{{ class_info.section }} {{ class_info.title }}
+    {% else %}
+        Class - Y{{ class_info.year_group }} {{ class_info.title }}
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+
+    <section class="section" style="background-color: hsl(171, 100%, 41%);">
+        <h1 class="title">{{ class_info.title }}</h1>
+        <p><span class="bold">Teacher: </span>{{ class_info.teacher }}</p>
+        {% if class_info.section %}
+            <p><span class="bold">Class: </span>{{ class_info.year_group }}{{ class_info.section }}</p>
+        {% else %} 
+            <p><span class="bold">Class: </span>Year {{ class_info.year_group }}</p>
+        {% endif %}
+        <p><span class="bold">No. of students: </span>{{ class_info.class_size }}</p>
+    </section>
+
+    <section class="section">
+        <div class="tabs is-large is-boxed">
+            <ul>
+                <li id="pending-tab" class="is-active"><a>Pending</a></li>
+                <li id="overdue-tab"><a>Overdue</a></li>
+            </ul>
+        </div>
+
+        <div id="pending-assignments">
+            {% for i in range(1) %} 
+                <div class="box">
+                    <span class="tag is-warning">{{ "Due soon" }}</span>
+                    <p class="title" style="margin-top: 24px;">{{ "Title of assignment" }}</p>
+                    <p>{{ "Due date dd/mm/yyyy" }}</p>
+                    <p>{{ "Details of the assignment" }}</p>
+                    <p>{{ "n attachments" }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div id="overdue-assignments" style="display: none;">
+            {% for i in range(4) %} 
+                <div class="box">
+                    <span class="tag is-warning">{{ "Due soon" }}</span>
+                    <p class="title" style="margin-top: 24px;">{{ "Title of assignment" }}</p>
+                    <p>{{ "Due date dd/mm/yyyy" }}</p>
+                    <p>{{ "Details of the assignment" }}</p>
+                    <p>{{ "n attachments" }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <section class="section">
+        <div>
+            <div class="tabs is-large">
+                <ul>
+                    <li class="is-active"><a>Resources</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/pending_overdue_tabs.js') }}"></script>
+
+{% endblock %}
