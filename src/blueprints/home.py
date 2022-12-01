@@ -4,7 +4,7 @@ from math import ceil
 import sqlite3
 
 from src.helpers import login_required
-from src.db_helpers import get_subject_from_id, get_teacher_name
+from src.db_helpers import get_subject_from_id, get_teacher_name, get_class_info
 
 home = Blueprint("home", __name__, url_prefix="/home")
 
@@ -57,12 +57,19 @@ def teacher_home():
     cur = con.cursor()
 
     # 0 class id, 1 title, 2 teacher username, 3 subject id, 4 year_group, 5 section 
-    classes = cur.execute("SELECT * FROM classes WHERE teacher = ?", [session["user_info"]["username"]]).fetchall()
-    classes = [list(x) for x in classes]
+    # sql_query = """SELECT classes.title, classes.teacher, classes.year_group, classes.section, subjects.subject 
+    # FROM classes 
+    # INNER JOIN subjects ON classes.subject_id = subjects.subject_id
+    # WHERE teacher = ?"""
+    
+    # classes = cur.execute(sql_query, [session["user_info"]["username"]]).fetchall()
+    # classes = [list(x) for x in classes]
 
-    for i in range(len(classes)):
-        num_of_students = cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [classes[i][0]]).fetchone()[0]
-        classes[i].append(num_of_students)
+    # for i in range(len(classes)):
+    #     num_of_students = cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [classes[i][0]]).fetchone()[0]
+    #     classes[i].append(num_of_students)
+
+    class_info = get_class_info(class_id)
         
     print(classes)
 

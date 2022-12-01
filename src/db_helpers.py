@@ -31,6 +31,19 @@ def get_teacher_name(username):
 
 
 def get_class_info(class_id):
+    """
+    Provides a dictionary which contains a class':
+    class id,
+    title,
+    teacher username,
+    teacher name,
+    subject,
+    year group,
+    section (NULL if there is no assigned section),
+    class size
+    """
+
+
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
 
@@ -39,13 +52,13 @@ def get_class_info(class_id):
     class_info = {
         "class_id": class_id,
         "title": class_info[1],
-        "teacher": class_info[2],
+        "teacher_username": class_info[2],
+        "teacher_name": get_teacher_name(class_info[2]),
         "subject": get_subject_from_id(class_info[3]),
         "year_group": class_info[4],
-        "section": class_info[5]
+        "section": class_info[5],
+        "class_size": get_class_size(class_id)
     }
-
-    class_info["class_size"] = get_class_size(class_id)
 
     return class_info
 
