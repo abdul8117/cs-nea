@@ -21,7 +21,7 @@
         <div class="block">
             <span class="bold">Name: </span>
             {{ user_info.first_name.capitalize() }} {{ user_info.surname.capitalize() }}
-            <i class="fa-solid fa-pen" id="edit"></i>
+            <i class="fa-solid fa-pen edit"></i>
 
             <div class="update-field">
                 <form action="/profile" method="post">
@@ -44,13 +44,22 @@
         {% if user_info.is_student %}
             <div class="block">
                 <span class="bold">Year group: </span>{{ user_info.year_group }}
-                <i class="fa-solid fa-pen" id="edit"></i>
+                <i class="fa-solid fa-pen edit"></i>
 
                 <div class="update-field">
                     <form action="/profile" method="post">
                         <div class="field">
-                            <div class="control">
-                                <input type="text" class="input" placeholder="Update year group" name="new-year-group">
+                            <div class="select">
+                                <select name="year-group">
+                                    <option value="">Select your year group</option>
+                                    <option value="7">Year 7</option>
+                                    <option value="8">Year 8</option>
+                                    <option value="9">Year 9</option>
+                                    <option value="10">Year 10</option>
+                                    <option value="11">Year 11</option>
+                                    <option value="12">Year 12</option>
+                                    <option value="13">Year 13</option>
+                                </select>
                             </div>
                         </div>
                         <input type="submit" value="Update year group" class="button is-primary">
@@ -60,12 +69,19 @@
 
             <div class="block">
                 <span class="bold">Section: </span>{{ user_info.section.capitalize() }}
-                <i class="fa-solid fa-pen" id="edit"></i>
+                <i class="fa-solid fa-pen edit"></i>
                 <div class="update-field">
                     <form action="/profile" method="post">
                         <div class="field">
-                            <div class="control">
-                                <input type="text" class="input" placeholder="Update section" name="new-section">
+                            <div class="select">
+                                <select name="section" id="">
+                                    <option value="">Select your year group's section</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                </select>
                             </div>
                         </div>
                         <input type="submit" value="Update section" class="button is-primary">
@@ -76,7 +92,7 @@
 
         <div class="block">
             <span class="bold">Email: </span>{{ user_info.email }}
-            <i class="fa-solid fa-pen" id="edit"></i>
+            <i class="fa-solid fa-pen edit"></i>
 
             <div class="update-field">
                 <form action="/profile" method="post">
