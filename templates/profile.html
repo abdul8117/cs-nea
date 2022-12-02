@@ -6,20 +6,93 @@
 
 {% block main %}
 
+    <style>
+        i:hover {
+            cursor: pointer;
+        }
+    </style>
+
     <section class="section" style="background-color: hsl(171, 100%, 41%);">
         <h1 class="title">Your Profile</h1>
     </section>
 
     <section class="section">
-        <p><span class="bold">Name: </span>{{ user_info.first_name.capitalize() }} {{ user_info.surname.capitalize() }}</p>
-        <i class="fa-solid fa-pen"></i>
-        <p><span class="bold">Username: </span>{{ user_info.username }}</p>
+
+        <div class="block">
+            <span class="bold">Name: </span>
+            {{ user_info.first_name.capitalize() }} {{ user_info.surname.capitalize() }}
+            <i class="fa-solid fa-pen" id="edit"></i>
+
+            <div class="update-field">
+                <form action="/profile" method="post">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" class="input" placeholder="Update name" name="new-name">
+                        </div>
+                    </div>
+                    <input type="submit" value="Update name" class="button is-primary">
+                </form>
+            </div>
+        </div>
+        
+
+        <div class="block">
+            <span class="bold">Username: </span>{{ user_info.username }}
+        </div>
+
+
         {% if user_info.is_student %}
-            <p><span class="bold">Year group: </span>{{ user_info.year_group }}</p>
-            <p><span class="bold">Section: </span>{{ user_info.section.capitalize() }}</p>
+            <div class="block">
+                <span class="bold">Year group: </span>{{ user_info.year_group }}
+                <i class="fa-solid fa-pen" id="edit"></i>
+
+                <div class="update-field">
+                    <form action="/profile" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input type="text" class="input" placeholder="Update year group" name="new-year-group">
+                            </div>
+                        </div>
+                        <input type="submit" value="Update year group" class="button is-primary">
+                    </form>
+                </div>
+            </div>
+
+            <div class="block">
+                <span class="bold">Section: </span>{{ user_info.section.capitalize() }}
+                <i class="fa-solid fa-pen" id="edit"></i>
+                <div class="update-field">
+                    <form action="/profile" method="post">
+                        <div class="field">
+                            <div class="control">
+                                <input type="text" class="input" placeholder="Update section" name="new-section">
+                            </div>
+                        </div>
+                        <input type="submit" value="Update section" class="button is-primary">
+                    </form>
+                </div>
+            </div>
         {% endif %}
-        <p><span class="bold">Email: </span>{{ user_info.email }}</p>
+
+        <div class="block">
+            <span class="bold">Email: </span>{{ user_info.email }}
+            <i class="fa-solid fa-pen" id="edit"></i>
+
+            <div class="update-field">
+                <form action="/profile" method="post">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" class="input" placeholder="Update email" name="new-email">
+                        </div>
+                    </div>
+                    <input type="submit" value="Update email" class="button is-primary">
+                </form>
+            </div>
+        </div>
+
     </section>
+
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 
 
 {% endblock %}

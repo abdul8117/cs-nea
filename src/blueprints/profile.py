@@ -9,7 +9,14 @@ from src.helpers import login_required
 profile = Blueprint("profile", __name__)
 
 @profile.route("/profile", methods=["GET", "POST"])
+@login_required
 def profile_page():
     # TODO allow the ability to edit info
-    
-    return render_template("profile.html", user_info=session["user_info"])
+
+    if request.method == "POST":
+        pass
+    else:
+        return render_template("profile.html", user_info=session["user_info"])
+
+
+
