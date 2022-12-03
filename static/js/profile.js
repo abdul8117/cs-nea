@@ -5,6 +5,7 @@ updateFields.forEach(field => {
     field.style.display = "none";
 });
 
+
 // logic for toggling the input fields
 const editIcons = document.querySelectorAll(".edit");
 let formDivElement;

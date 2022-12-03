@@ -60,6 +60,8 @@ def create_username(f_name, s_name, is_student):
     first letter of their first name + '.' surname + '_t'
     """
 
+    # TODO logic for if a username is a duplicate
+
     if is_student:
         return f_name + "." + s_name[0] + "_s"
     else:

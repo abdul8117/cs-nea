@@ -19,10 +19,12 @@ def student_home():
 
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
-    sql_query = """SELECT classes.class_id, classes.title, classes.teacher, classes.subject_id 
-                FROM classes
-                INNER JOIN students_in_classes ON classes.class_id = students_in_classes.class_id
-                WHERE students_in_classes.username = ?"""
+    sql_query = """
+    SELECT classes.class_id, classes.title, classes.teacher, classes.subject_id 
+    FROM classes
+    INNER JOIN students_in_classes ON classes.class_id = students_in_classes.class_id
+    WHERE students_in_classes.username = ?
+    """
     
     # columns: 
     # class_id 0, title 1, teacher-username 2, subject_id 3, subject 4   

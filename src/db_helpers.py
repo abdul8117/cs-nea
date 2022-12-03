@@ -1,7 +1,13 @@
+from flask import session
+
 import sqlite3
 
+
+DB_PATH = "db/database.db"
+
+
 def insert_user_into_database(details, is_student):
-    con = sqlite3.connect("db/database.db")
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
     if is_student:
         cur.execute("INSERT INTO students (username, first_name, surname, year_group, section, email, password, salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", details)
@@ -12,7 +18,7 @@ def insert_user_into_database(details, is_student):
 
 
 def get_subject_from_id(id):
-    con = sqlite3.connect("db/database.db")
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
     subject = cur.execute("SELECT subject FROM subjects WHERE subject_id = ?", [id]).fetchone()[0]
@@ -21,7 +27,7 @@ def get_subject_from_id(id):
 
 
 def get_teacher_name(username):
-    con = sqlite3.connect("db/database.db")
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
     teacher_name = cur.execute("SELECT first_name, surname FROM teachers WHERE username = ?", [username]).fetchall()[0]
@@ -44,7 +50,7 @@ def get_class_info(class_id):
     """
 
 
-    con = sqlite3.connect("db/database.db")
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
     class_info = cur.execute("SELECT * FROM classes WHERE class_id = ?", [class_id]).fetchone()
@@ -64,7 +70,92 @@ def get_class_info(class_id):
 
 
 def get_class_size(class_id):
-    con = sqlite3.connect("db/database.db")
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
     return cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [class_id]).fetchone()[0]
+
+
+def update_name(f_name, s_name):
+    from src.helpers import create_username
+
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    old_username = session["user_info"]["username"]
+    new_username = create_username(f_name, s_name, session["user_info"]["is_student"])
+
+    # update first name, surname, and username 
+    if session["user_info"]["is_student"]:
+        sql_query = """
+        UPDATE students
+        SET first_name = ?, surname = ?, username = ?
+        WHERE username = ?
+        """
+    else:
+        sql_query = """
+        UPDATE teachers
+        SET first_name = ?, surname = ?, username = ?
+        WHERE username = ?
+        """
+
+    cur.execute(sql_query, [f_name, s_name, new_username, old_username])
+
+    # update the session dict
+    session["user_info"]["first_name"] = f_name
+    session["user_info"]["surname"] = s_name
+    session["user_info"]["username"] = new_username
+
+
+def update_year_group(year_group):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    sql_query = """
+    UPDATE students 
+    SET year_group = ?
+    WHERE username = ?
+    """
+
+    cur.execute(sql_query, [year_group, session["user_info"]["username"]])
+
+    # update the session dict
+    session["user_info"]["year_group"] = year_group
+
+
+def update_section(section):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    sql_query = """
+    UPDATE students 
+    SET section = ?
+    WHERE username = ?
+    """
+
+    cur.execute(sql_query, [section, session["user_info"]["username"]])
+
+    # update the session dict
+    session["user_info"]["section"] = section
+
+
+def update_email(email):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    if session["user_info"]["is_student"]:
+        sql_query = """
+        UPDATE students
+        SET email = ?
+        WHERE username = ?
+        """
+    else:
+        sql_query = """
+        UPDATE teachers
+        SET email = ?
+        WHERE username = ?
+        """
+    
+    cur.execute(sql_query, [email, session["user_info"]["username"]])
+
+    session["user_info"]["email"] = email
