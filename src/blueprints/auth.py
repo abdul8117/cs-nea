@@ -70,7 +70,7 @@ def register():
         salt = generate_salt()
         pw_hash = hashlib.sha512()
         pw_hash.update(bytes(password + salt, encoding="utf-16"))
-        pw_hash = pw_hash.digest()
+        pw_hash = pw_hash.digest() 
 
         # Insert into DB
         if is_student:

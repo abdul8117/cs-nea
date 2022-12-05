@@ -58,21 +58,37 @@ def teacher_home():
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
 
-    # 0 class id, 1 title, 2 teacher username, 3 subject id, 4 year_group, 5 section 
-    # sql_query = """SELECT classes.title, classes.teacher, classes.year_group, classes.section, subjects.subject 
-    # FROM classes 
-    # INNER JOIN subjects ON classes.subject_id = subjects.subject_id
-    # WHERE teacher = ?"""
+    sql_query = """ 
+    SELECT classes.class_id, classes.title, teachers.first_name, teachers.surname, classes.year_group, classes.section, subjects.subject
+    FROM classes
+    JOIN teachers
+    ON classes.teacher = teachers.username
+    JOIN subjects
+    ON classes.subject_id = subjects.subject_id
+    WHERE classes.teacher = ?
+    """
     
-    # classes = cur.execute(sql_query, [session["user_info"]["username"]]).fetchall()
-    # classes = [list(x) for x in classes]
+    classes = cur.execute(sql_query, [session["user_info"]["username"]]).fetchall()
+    classes = [list(x) for x in classes]
+    classes_dict = []
 
-    # for i in range(len(classes)):
-    #     num_of_students = cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [classes[i][0]]).fetchone()[0]
-    #     classes[i].append(num_of_students)
+    for i in range(len(classes)):
 
-    class_info = get_class_info(class_id)
-        
-    print(classes)
+        # count the number of students in each class
+        num_of_students = cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [classes[i][0]]).fetchone()[0]
 
-    return render_template("home_teacher.html", user_info=session["user_info"], classes=classes)
+        class_ = {
+            "id": classes[i][0],
+            "title": classes[i][1],
+            "teacher_first_name": classes[i][2],
+            "teacher_surname": classes[i][3],
+            "year_group": classes[i][4],
+            "section": classes[i][5],
+            "subject": classes[i][6],
+            "class_size": num_of_students
+        }
+
+        classes_dict.append(class_)
+
+
+    return render_template("home_teacher.html", user_info=session["user_info"], classes=classes_dict)

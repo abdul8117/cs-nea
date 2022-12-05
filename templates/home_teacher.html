@@ -27,10 +27,10 @@
                 <div class="tile is-vertical is-parent">
                     {% for class in classes %}
                         <div class="tile is-child">
-                            <a href="/teacher/class/{{ class[0] }}">
+                            <a href="/teacher/class/{{ class.id }}">
                                 <div class="box class-group">
-                                    <p class="title">{{ class[1] }}</p>
-                                    <p><span class="bold">No. of students: </span>{{ class[-1] }}</p>
+                                    <p class="title">{{ class.title }}</p>
+                                    <p><span class="bold">No. of students: </span>{{ class.class_size }}</p>
                                     <p><span class="bold">No. of assignments due: </span>TODO</p>
                                 </div>
                             </a> 

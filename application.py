@@ -1,6 +1,6 @@
 from flask import Flask, url_for, redirect, render_template, request, session
 from flask_session import Session
-from werkzeug import security
+# from werkzeug import security
 
 from src.blueprints.auth import auth as auth_bp
 from src.blueprints.home import home as home_bp
@@ -13,7 +13,6 @@ import sqlite3
 
 
 app = Flask(__name__)
-# con = sqlite3.connect("db/database.db", check_same_thread=False)
 
 # Session config
 app.config["SESSION_PERMANENT"] = False
