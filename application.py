@@ -41,5 +41,11 @@ def index():
 
 
 @app.route("/home/student/assignments")
+@login_required
 def student_assignments():
     return render_template("all_assignments_student.html", user_info=session["user_info"])
+
+
+@app.route("/unauthorised")
+def unauthorised():
+    return "You are not authorised to access this page."

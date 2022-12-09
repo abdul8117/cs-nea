@@ -33,7 +33,7 @@ def get_teacher_name(username):
     teacher_name = cur.execute("SELECT first_name, surname FROM teachers WHERE username = ?", [username]).fetchall()[0]
     print(teacher_name)
 
-    return teacher_name
+    return teacher_name[0].capitalize() + " " + teacher_name[1].capitalize()
 
 
 def get_class_info(class_id):
@@ -53,16 +53,28 @@ def get_class_info(class_id):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
-    class_info = cur.execute("SELECT * FROM classes WHERE class_id = ?", [class_id]).fetchone()
+
+    sql_query = """
+    SELECT classes.title, subjects.subject, teachers.username, teachers.suffix, teachers.first_name, teachers.surname, classes.year_group, classes.section
+    FROM classes
+    JOIN teachers
+    ON classes.teacher = teachers.username
+    JOIN subjects
+    ON classes.subject_id = subjects.subject_id
+    WHERE class_id = ?;
+    """
+
+    class_info = cur.execute(sql_query, [class_id]).fetchone()
     print("\n\n\nCLASS INFO", class_info)
     class_info = {
         "class_id": class_id,
-        "title": class_info[1],
+        "title": class_info[0],
+        "subject": class_info[1],
         "teacher_username": class_info[2],
-        "teacher_name": get_teacher_name(class_info[2]),
-        "subject": get_subject_from_id(class_info[3]),
-        "year_group": class_info[4],
-        "section": class_info[5],
+        "suffix": class_info[3],
+        "teacher_name": class_info[4].capitalize() + " " + class_info[5].capitalize(),
+        "year_group": class_info[6],
+        "section": class_info[7],
         "class_size": get_class_size(class_id)
     }
 

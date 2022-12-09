@@ -16,13 +16,13 @@
             <h1 class="title">Your classes</h2>
             <div class="tile is-ancestor">
                 <div class="tile is-vertical is-parent">    
-                    {% for j in classes %}
+                    {% for class in classes %}
                         <div class="tile is-child">
-                            <a href="/student/class/{{ j[0] }}">
+                            <a href="/student/class/{{ class.id }}">
                                 <div class="box class-group">
-                                    <p class="title">{{ j[1] }}</p>
-                                    <p><span class="bold">Teacher: </span>{{ j[2] }}</p>
-                                    <p><span class="bold">Subject: </span>{{ j[4] }}</p>
+                                    <p class="title">{{ class.title }}</p>
+                                    <p><span class="bold">Teacher: </span>{{ class.teacher_first_name.capitalize() }} {{ class.teacher_surname.capitalize() }}</p>
+                                    <p><span class="bold">Subject: </span>{{ class.subject }}</p>
                                     <p><span class="bold">Assignments due: </span>TODO</p>
                                     <p><span class="bold">Overdue: </span>TODO</p>  
                                 </div>

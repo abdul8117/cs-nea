@@ -3,13 +3,14 @@ from flask import Flask, Blueprint, render_template, request, session
 from math import ceil
 import sqlite3
 
-from src.helpers import login_required
+from src.helpers import login_required, only_students, only_teachers
 from src.db_helpers import get_subject_from_id, get_teacher_name, get_class_info
 
 home = Blueprint("home", __name__, url_prefix="/home")
 
 @home.route("/student")
 @login_required
+@only_students
 def student_home():
 
     # Get all class details from the database
@@ -20,31 +21,43 @@ def student_home():
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
     sql_query = """
-    SELECT classes.class_id, classes.title, classes.teacher, classes.subject_id 
+    SELECT classes.class_id, classes.title, subjects.subject, classes.teacher, teachers.suffix, teachers.first_name, teachers.surname
     FROM classes
-    INNER JOIN students_in_classes ON classes.class_id = students_in_classes.class_id
-    WHERE students_in_classes.username = ?
+    JOIN students_in_classes
+    ON classes.class_id = students_in_classes.class_id
+    JOIN teachers
+    ON classes.teacher = teachers.username
+    JOIN subjects
+    ON classes.subject_id = subjects.subject_id
+    WHERE students_in_classes.username = ?;
     """
     
-    # columns: 
-    # class_id 0, title 1, teacher-username 2, subject_id 3, subject 4   
     classes = cur.execute(sql_query, [session["user_info"]["username"]])
     classes = classes.fetchall()
+    classes_dict = []
+    print(classes)
 
-    # add subject and teacher names to the lists
-    classes = [list(x) for x in classes]
     for i in range(len(classes)):
-        classes[i].append(f"{get_subject_from_id(classes[i][3])}")
-        teacher_name = get_teacher_name(classes[i][2])
-        classes[i][2] = teacher_name[0].capitalize() + " " + teacher_name[1].capitalize()
+        class_ = {
+            "id": classes[i][0],
+            "title": classes[i][1],
+            "subject": classes[i][2],
+            "teacher_username": classes[i][3],
+            "teacher_suffix": classes[i][4],
+            "teacher_first_name": classes[i][5],
+            "teacher_surname": classes[i][6]
+        }
 
-    print("classes: ", classes)
+        classes_dict.append(class_)
 
-    return render_template("home_student.html", user_info=session["user_info"], classes=classes, parent_tile_loop_val= int(ceil(len(classes)) / 2))
+
+
+    return render_template("home_student.html", user_info=session["user_info"], classes=classes_dict)
 
 
 @home.route("/teacher")
 @login_required
+@only_teachers
 def teacher_home():
     print(session)
 

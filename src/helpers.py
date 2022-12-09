@@ -7,9 +7,33 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         user_info = session.get("user_info")
-        print("user info",user_info)
+        # print("user info",user_info)
         if user_info is None:
             return redirect(url_for("auth.login"))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def only_students(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user_info = session.get("user_info")
+        # print("user info",user_info)
+        if not user_info["is_student"]:
+            return redirect(url_for("unauthorised"))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def only_teachers(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user_info = session.get("user_info")
+        # print("user info",user_info)
+        if user_info["is_student"]:
+            return redirect(url_for("unauthorised"))
         return f(*args, **kwargs)
 
     return decorated_function
