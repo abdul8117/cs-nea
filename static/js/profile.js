@@ -16,8 +16,7 @@ editIcons.forEach(icon => {
         
         if (formDivElement.style.display == "none") {
             formDivElement.style.display = "block";
-        }
-        else {
+        } else {
             formDivElement.style.display = "none";
         }
     });

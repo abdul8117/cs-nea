@@ -15,12 +15,70 @@
             <h1 class="title">Your classes</h1>
 
             <div class="block">
-                <button id="create-class-btn" class="button is-primary" name="create_class" value="teacher">
+                <div class="block">
+                    <button id="create-class-btn" class="button is-primary" name="create_class">
                     <span class="icon">
                         <i class="fa-solid fa-plus"></i>
                     </span>
-                    <span>Create a class</span>
-                </button>
+                        <span>Create a class</span>
+                    </button>
+                </div>
+
+                <div id="create-class-form" style="display: none;">
+                    <form action="/create-class" method="post">
+                        <div class="field">
+                            <label for="" class="label">Title</label>
+                            <input name="class-title" type="text" class="input" placeholder="Title">
+                        </div>
+
+                        <div class="field">
+                            <label for="" class="label">Subject</label>
+                            <div class="select">
+                                <select name="subject" id="">
+                                    <option value="">Select subject</option>
+                                    {% for subject in subjects %}
+                                        <option value="{{ subject[0] }}">{{ subject[1] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="" class="label">Year group</label>
+                            <div class="select">
+                                <select name="year-group" id="">
+                                    <option value="">Year group</option>
+                                    <option value="7">Year 7</option>
+                                    <option value="8">Year 8</option>
+                                    <option value="9">Year 9</option>
+                                    <option value="10">Year 10</option>
+                                    <option value="11">Year 11</option>
+                                    <option value="12">Year 12</option>
+                                    <option value="13">Year 13</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <label for="" class="label">Section (optional)</label>
+                            <div class="select">
+                                <select name="section" id="">
+                                    <option value="">Section</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="control">
+                            <input type="submit" value="Create class" class="button is-primary">
+                        </div>
+                    </form>
+                </div>
+
             </div>
 
             <div class="tile is-ancestor">
@@ -39,5 +97,21 @@
                 </div>
             </div>
         </section>
+
+
+        <script>
+            const createClassButton = document.querySelector("#create-class-btn");
+            const createClassForm = document.querySelector("#create-class-form");
+
+
+            createClassButton.onclick = function toggleClassForm() {
+                if (createClassForm.style.display == "none"){
+                    createClassForm.style.display = "block";
+                } else {
+                    createClassForm.style.display = "none";
+                }
+            }
+        </script>
+
 
 {% endblock %}

@@ -1,10 +1,9 @@
 from flask import Flask, Blueprint, render_template, request, session
 
-from math import ceil
 import sqlite3
 
 from src.helpers import login_required, only_students, only_teachers
-from src.db_helpers import get_subject_from_id, get_teacher_name, get_class_info
+from src.db_helpers import get_subject_from_id, get_teacher_name, get_class_info, get_all_subjects
 
 home = Blueprint("home", __name__, url_prefix="/home")
 
@@ -61,13 +60,6 @@ def student_home():
 def teacher_home():
     print(session)
 
-    # if session["user_info"]["is_student"]:
-    #     return redirect("/unauthorised")
-
-
-    # TODO: USE DICT INSTEAD
-    
-
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
 
@@ -82,7 +74,6 @@ def teacher_home():
     """
     
     classes = cur.execute(sql_query, [session["user_info"]["username"]]).fetchall()
-    classes = [list(x) for x in classes]
     classes_dict = []
 
     for i in range(len(classes)):
@@ -104,4 +95,8 @@ def teacher_home():
         classes_dict.append(class_)
 
 
-    return render_template("home_teacher.html", user_info=session["user_info"], classes=classes_dict)
+    # get all subjects for the create class form
+    subjects = get_all_subjects()
+    print(subjects)
+
+    return render_template("home_teacher.html", user_info=session["user_info"], classes=classes_dict, subjects=subjects)

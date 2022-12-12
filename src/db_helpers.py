@@ -36,13 +36,25 @@ def get_teacher_name(username):
     return teacher_name[0].capitalize() + " " + teacher_name[1].capitalize()
 
 
+def get_student_info(username):
+    # TODO
+    pass
+
+
+def get_teacher_info(username):
+    # TODO
+    pass
+
+
 def get_class_info(class_id):
     """
     Provides a dictionary which contains a class':
     class id,
     title,
+    teacher suffix,
     teacher username,
-    teacher name,
+    teacher first name,
+    teacher surname,
     subject,
     year group,
     section (NULL if there is no assigned section),
@@ -67,12 +79,13 @@ def get_class_info(class_id):
     class_info = cur.execute(sql_query, [class_id]).fetchone()
     print("\n\n\nCLASS INFO", class_info)
     class_info = {
-        "class_id": class_id,
+        "id": class_id,
         "title": class_info[0],
         "subject": class_info[1],
         "teacher_username": class_info[2],
         "suffix": class_info[3],
-        "teacher_name": class_info[4].capitalize() + " " + class_info[5].capitalize(),
+        "teacher_first_name": class_info[4].capitalize(),
+        "teacher_surname": class_info[5].capitalize(),
         "year_group": class_info[6],
         "section": class_info[7],
         "class_size": get_class_size(class_id)
@@ -86,6 +99,15 @@ def get_class_size(class_id):
     cur = con.cursor()
 
     return cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [class_id]).fetchone()[0]
+
+
+def get_all_subjects():
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    subjects = cur.execute("SELECT * FROM subjects").fetchall()
+
+    return subjects
 
 
 def update_name(f_name, s_name):
@@ -171,3 +193,17 @@ def update_email(email):
     cur.execute(sql_query, [email, session["user_info"]["username"]])
 
     session["user_info"]["email"] = email
+
+
+def create_class_db(title, subject_id, year_group, section):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    sql_query = """
+    INSERT INTO classes (title, teacher, subject_id, year_group, section) VALUES(?, ?, ?, ?, ?)
+    """
+
+    cur.execute(sql_query, [title, session["user_info"]["username"], subject_id, year_group, section])
+
+    con.commit()
+    cur.close()

@@ -2,17 +2,11 @@ from flask import Flask, Blueprint, url_for, request, redirect, render_template,
 from flask_session import Session
 
 from src.helpers import create_username, generate_salt
-from src.db_helpers import insert_user_into_database
+from src.db_helpers import insert_user_into_database, get_teacher_info, get_student_info
 
 import sqlite3, hashlib
 
 auth = Blueprint("auth", __name__)
-
-# auth = Flask(__name__)
-# auth.config["SESSION_PERMANENT"] = False
-# auth.config["SESSION_TYPE"] = "filesystem"
-# auth.config["SESSION_COOKIE_PATH"] = "/"
-# Session(auth)
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
@@ -170,10 +164,11 @@ def login():
 
 
         if "_s" in username: 
+
             session["user_info"] = {
                 "username": username,
-                "first_name": cur.execute("SELECT first_name FROM students WHERE username = ?", [username]).fetchone()[0],
-                "surname": cur.execute("SELECT surname FROM students WHERE username = ?", [username]).fetchone()[0],
+                "first_name": cur.execute("SELECT first_name FROM students WHERE username = ?", [username]).fetchone()[0].capitalize(),
+                "surname": cur.execute("SELECT surname FROM students WHERE username = ?", [username]).fetchone()[0].capitalize(),
                 "email": cur.execute("SELECT email FROM students WHERE username = ?", [username]).fetchone()[0],
                 "year_group": cur.execute("SELECT year_group FROM students WHERE username = ?", [username]).fetchone()[0],
                 "section": cur.execute("SELECT section FROM students WHERE username = ?", [username]).fetchone()[0],
@@ -187,8 +182,8 @@ def login():
             session["user_info"] = {
                 "username": username,
                 "email": cur.execute("SELECT email FROM teachers WHERE username = ?", [username]).fetchone()[0],
-                "first_name": cur.execute("SELECT first_name FROM teachers WHERE username = ?", [username]).fetchone()[0],
-                "surname": cur.execute("SELECT surname FROM teachers WHERE username = ?", [username]).fetchone()[0],
+                "first_name": cur.execute("SELECT first_name FROM teachers WHERE username = ?", [username]).fetchone()[0].capitalize(),
+                "surname": cur.execute("SELECT surname FROM teachers WHERE username = ?", [username]).fetchone()[0].capitalize(),
                 "suffix": cur.execute("SELECT suffix FROM teachers WHERE username = ?", [username]).fetchone()[0],
                 "is_student": False,
             }
