@@ -12,6 +12,7 @@
 
     <section class="section" style="background-color: hsl(171, 100%, 41%);">
         <h1 class="title">{{ class_info.title }}</h1>
+        <p><span class="bold">Join code for students: </span>{{ class_info.join_code }}</p>
         <p><span class="bold">Teacher: </span>{{ class_info.teacher_first_name }} {{ class_info.teacher_surname }}</p>
         {% if class_info.section %}
             <p><span class="bold">Class: </span>{{ class_info.year_group }}{{ class_info.section }}</p>
@@ -23,10 +24,9 @@
 
     <section class="section">
 
-
         <div class="block">
             <div class="block">
-                <button id="create-assignment-btn" class="button is-primary" name="create_assignment">
+                <button id="btn-js" class="button is-primary" name="create-assignment">
                     <span class="icon">
                         <i class="fa-solid fa-plus"></i>
                     </span>
@@ -34,7 +34,7 @@
                 </button>
             </div>
 
-            <div id="create-assignment-form" style="display: none;" >
+            <div id="form-js" style="display: none;" >
                 <form action="">
                     <!-- TODO -->
                 </form>
@@ -85,18 +85,6 @@
     </section>
 
     <script src="{{ url_for('static', filename='js/pending_overdue_tabs.js') }}"></script>
-    <script>
-        const createAssignmentButton = document.querySelector("#create-assignment-btn");
-        const createAssignmentForm = document.querySelector("#create-assignment-form");
-
-
-        createAssignmentButton.onclick = function toggleAssignmentForm() {
-            if (createAssignmentForm.style.display == "none"){
-                createAssignmentForm.style.display = "block";
-            } else {
-                createAssignmentForm.style.display = "none";
-            }
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/btn_show_form.js') }}"></script>
 
 {% endblock %}

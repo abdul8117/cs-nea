@@ -13,6 +13,31 @@
         </section>
         
         <section class="section" style="background-color: #f5f5f5;">
+
+            <div class="block">
+                <div class="block">
+                    <button id="btn-js" class="button is-primary" name="join-class">
+                        <span class="icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </span>
+                        <span>Join class</span>
+                    </button>
+                </div>
+
+                <div id="form-js" style="display: none;" >
+                    <form action="/join-class" method="post">
+                        <div class="field">
+                            <label for="" class="label">Class code</label>
+                            <input name="class-code" type="text" class="input" placeholder="Code">
+                        </div>
+
+                        <div class="control">
+                            <input type="submit" value="Join" class="button is-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <h1 class="title">Your classes</h2>
             <div class="tile is-ancestor">
                 <div class="tile is-vertical is-parent">    
@@ -32,5 +57,7 @@
                 </div>
             </div>
         </section>
+
+        <script src="{{ url_for('static', filename='js/btn_show_form.js') }}"></script>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 from flask import session
 
-import sqlite3
+import sqlite3, random
 
 
 DB_PATH = "db/database.db"
@@ -58,7 +58,8 @@ def get_class_info(class_id):
     subject,
     year group,
     section (NULL if there is no assigned section),
-    class size
+    class size,
+    join code
     """
 
 
@@ -67,7 +68,7 @@ def get_class_info(class_id):
 
 
     sql_query = """
-    SELECT classes.title, subjects.subject, teachers.username, teachers.suffix, teachers.first_name, teachers.surname, classes.year_group, classes.section
+    SELECT classes.title, subjects.subject, teachers.username, teachers.suffix, teachers.first_name, teachers.surname, classes.year_group, classes.section, classes.join_code
     FROM classes
     JOIN teachers
     ON classes.teacher = teachers.username
@@ -88,7 +89,8 @@ def get_class_info(class_id):
         "teacher_surname": class_info[5].capitalize(),
         "year_group": class_info[6],
         "section": class_info[7],
-        "class_size": get_class_size(class_id)
+        "class_size": get_class_size(class_id),
+        "join_code": class_info[8]
     }
 
     return class_info
@@ -205,5 +207,29 @@ def create_class_db(title, subject_id, year_group, section):
 
     cur.execute(sql_query, [title, session["user_info"]["username"], subject_id, year_group, section])
 
+    # class_id = cur.execute("SELECT class_id FROM classes").fetchall()[0][-1]
+    class_id = cur.execute("SELECT class_id FROM classes ORDER BY class_id DESC").fetchone()[0]
+
+    join_code = f"{class_id}-{subject_id}{year_group}{random.randint(100, 1000)}"
+
+    print(class_id, join_code)
+
+    # USE UPDATE
+    cur.execute("UPDATE classes SET join_code = ? WHERE class_id = ?", [join_code, class_id])
+    con.commit()
+    
+    cur.close()
+
+
+def add_student_to_class(code):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    sql_query = """
+    INSERT INTO students_in_classes (class_id, username) VALUES(?, ?)
+    """
+
+    cur.execute(sql_query, [code.split("-")[0], session["user_info"]["username"]])
+    
     con.commit()
     cur.close()
