@@ -25,12 +25,12 @@
         </div>
 
         <div id="pending-assignments">
-            {% for i in range(1) %} 
+            {% for i in range(assignments|count) %} 
                 <div class="box">
                     <span class="tag is-warning">{{ "Due soon TODO" }}</span>
-                    <p class="title" style="margin-top: 24px;">{{ "Title of assignment TODO" }}</p>
-                    <p>{{ "Due date dd/mm/yyyy" }}</p>
-                    <p>{{ "Details of the assignment" }}</p>
+                    <p class="title" style="margin-top: 24px;">{{ assignments[i].title }}</p>
+                    <p><span class="bold">Due date: </span>{{ assignments[i].due_date }}</p>
+                    <p>{{ assignments[i].description }}</p>
                     <p>{{ "n attachments" }}</p>
                 </div>
             {% endfor %}

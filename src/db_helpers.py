@@ -1,6 +1,6 @@
 from flask import session
 
-import sqlite3, random
+import sqlite3, random, time
 
 
 DB_PATH = "db/database.db"
@@ -233,3 +233,32 @@ def add_student_to_class(code):
     
     con.commit()
     cur.close()
+
+
+def get_all_assignments(class_id):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    assignments_query = cur.execute("SELECT * FROM assignments WHERE class_id = ?", [class_id]).fetchall()
+
+    assignments = []
+    for i in range(len(assignments_query)):
+        # date_set = time.localtime(assignments_query[i][4])
+        # date_set = time.strftime("%d/%m/%Y", date_set)
+
+        # due_date = time.localtime(assignments_query[i][5])
+        # due_date = time.strftime("%d/%m/%Y", due_date)
+
+        assignment = {
+            "assignment_id": assignments_query[i][0],
+            "class_id": assignments_query[i][1],
+            "title": assignments_query[i][2],
+            "description": assignments_query[i][3],
+            "date_set": assignments_query[i][4],
+            "due_date": assignments_query[i][5]
+        }
+
+        assignments.append(assignment)
+
+    return assignments
+

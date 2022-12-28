@@ -6,6 +6,7 @@ from src.blueprints.auth import auth as auth_bp
 from src.blueprints.home import home as home_bp
 from src.blueprints.profile import profile as profile_bp
 from src.blueprints.classes import classes as classes_bp
+from src.blueprints.assignments import assignments as assignments_bp
 
 from src.helpers import login_required
 
@@ -28,6 +29,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(home_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(classes_bp)
+app.register_blueprint(assignments_bp)
 
 
 @app.route("/index")

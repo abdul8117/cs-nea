@@ -12,6 +12,13 @@ home = Blueprint("home", __name__, url_prefix="/home")
 @only_students
 def student_home():
 
+    if session.get("view") is None:
+        session["view"]  = {
+            "class_id": None
+        }
+    else:
+        session["view"]["class_id"] = None
+
     # Get all class details from the database
     # teacher name, number of assignments due, number of overdue assignments
 
@@ -59,6 +66,13 @@ def student_home():
 @only_teachers
 def teacher_home():
     print(session)
+
+    if session.get("view") is None:
+        session["view"]  = {
+            "class_id": None
+        }
+    else:
+        session["view"]["class_id"] = None
 
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()

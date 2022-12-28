@@ -14,6 +14,8 @@ profile = Blueprint("profile", __name__)
 def profile_page():
     # TODO allow the ability to edit info
 
+    session["view"]["class_id"] = None
+
     if request.method == "POST":
         # update profile info
         if request.form.get("new-first-name") and request.form.get("new-surname"):

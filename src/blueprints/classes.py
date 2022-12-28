@@ -3,7 +3,7 @@ from flask import Flask, Blueprint, render_template, session, redirect, url_for,
 import sqlite3
 
 from src.helpers import login_required, only_students, only_teachers
-from src.db_helpers import get_subject_from_id, get_class_info, create_class_db, add_student_to_class
+from src.db_helpers import get_subject_from_id, get_class_info, create_class_db, add_student_to_class, get_all_assignments
 
 classes = Blueprint("classes", __name__)
 
@@ -13,7 +13,11 @@ classes = Blueprint("classes", __name__)
 def show_student_classpage(class_id):
     class_info = get_class_info(class_id)
 
-    return render_template("class_student.html", user_info=session["user_info"], class_info=class_info)
+    session["view"]["class_id"] = class_id
+
+    assignments = get_all_assignments(class_id)
+
+    return render_template("class_student.html", user_info=session["user_info"], class_info=class_info, assignments=assignments)
 
 
 @classes.route("/teacher/class/<int:class_id>")
@@ -22,7 +26,14 @@ def show_student_classpage(class_id):
 def show_teacher_classpage(class_id):
     class_info = get_class_info(class_id)
 
-    return render_template("class_teacher.html", user_info=session["user_info"], class_info=class_info)
+    session["view"]["class_id"] = class_id
+
+    # get all assignments
+    assignments = get_all_assignments(class_id)
+
+    print(assignments)
+
+    return render_template("class_teacher.html", user_info=session["user_info"], class_info=class_info, assignments=assignments)
 
 
 @classes.route("/create-class", methods=["GET", "POST"])
