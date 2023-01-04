@@ -71,6 +71,7 @@ def register():
             details = (username, first_name, surname, year_group, section, email, pw_hash, salt)
         else:
             details = (username, first_name, surname, suffix, email, pw_hash, salt)
+        
         insert_user_into_database(details, is_student)
 
         if is_student:

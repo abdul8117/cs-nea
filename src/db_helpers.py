@@ -9,10 +9,24 @@ DB_PATH = "db/database.db"
 def insert_user_into_database(details, is_student):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
+    
     if is_student:
-        cur.execute("INSERT INTO students (username, first_name, surname, year_group, section, email, password, salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", details)
+        sql = """
+        INSERT INTO 
+        students 
+        (username, first_name, surname, year_group, section, email, password, salt) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        cur.execute(sql, details)
     else:
-        cur.execute("INSERT INTO teachers (username, first_name, surname, suffix, email, password, salt) VALUES (?, ?, ?, ?, ?, ?, ?)", details)
+        sql = """
+        INSERT INTO 
+        teachers 
+        (username, first_name, surname, suffix, email, password, salt) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)"
+        """
+        cur.execute(sql, details)
+    
     con.commit()
     con.close()
 
@@ -62,10 +76,8 @@ def get_class_info(class_id):
     join code
     """
 
-
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
-
 
     sql_query = """
     SELECT classes.title, subjects.subject, teachers.username, teachers.suffix, teachers.first_name, teachers.surname, classes.year_group, classes.section, classes.join_code
@@ -246,19 +258,52 @@ def get_all_assignments(class_id):
         # date_set = time.localtime(assignments_query[i][4])
         # date_set = time.strftime("%d/%m/%Y", date_set)
 
-        # due_date = time.localtime(assignments_query[i][5])
-        # due_date = time.strftime("%d/%m/%Y", due_date)
+        is_overdue = False
+        if int(assignments_query[i][5]) < time.time():
+            is_overdue = True
+
+        date_set = time.strftime("%d/%m/%y", time.localtime(assignments_query[i][4]))
+        due_date = time.strftime("%d/%m/%y", time.localtime(assignments_query[i][5]))
+
 
         assignment = {
-            "assignment_id": assignments_query[i][0],
+            "id": assignments_query[i][0],
             "class_id": assignments_query[i][1],
             "title": assignments_query[i][2],
             "description": assignments_query[i][3],
-            "date_set": assignments_query[i][4],
-            "due_date": assignments_query[i][5]
+            "date_set": date_set,
+            "due_date": due_date,
+            "is_overdue": is_overdue
         }
 
         assignments.append(assignment)
 
     return assignments
 
+
+def get_assignment(assignment_id):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    assignments_query = cur.execute("SELECT * FROM assignments WHERE assignment_id = ?", [assignment_id]).fetchone()
+    print(assignments_query)
+
+    date_set = time.strftime("%d/%m/%y", time.localtime(assignments_query[4]))
+    due_date = time.strftime("%d/%m/%y", time.localtime(assignments_query[5]))
+
+    is_overdue = False
+    if int(assignments_query[5]) < time.time():
+        is_overdue = True
+
+    assignment = {
+        "id": assignments_query[0],
+        "class_id": assignments_query[1],
+        "title": assignments_query[2],
+        "description": assignments_query[3],
+        "date_set": date_set,
+        "due_date": due_date,
+        "overdue": is_overdue
+    }
+    print(assignment)
+
+    return assignment

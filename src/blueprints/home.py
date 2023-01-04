@@ -26,7 +26,7 @@ def student_home():
 
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
-    sql_query = """
+    sql = """
     SELECT classes.class_id, classes.title, subjects.subject, classes.teacher, teachers.suffix, teachers.first_name, teachers.surname
     FROM classes
     JOIN students_in_classes
@@ -38,7 +38,7 @@ def student_home():
     WHERE students_in_classes.username = ?;
     """
     
-    classes = cur.execute(sql_query, [session["user_info"]["username"]])
+    classes = cur.execute(sql, [session["user_info"]["username"]])
     classes = classes.fetchall()
     classes_dict = []
     print(classes)
@@ -77,7 +77,7 @@ def teacher_home():
     con = sqlite3.connect("db/database.db")
     cur = con.cursor()
 
-    sql_query = """ 
+    sql = """ 
     SELECT classes.class_id, classes.title, teachers.first_name, teachers.surname, classes.year_group, classes.section, subjects.subject
     FROM classes
     JOIN teachers
@@ -87,7 +87,7 @@ def teacher_home():
     WHERE classes.teacher = ?
     """
     
-    classes = cur.execute(sql_query, [session["user_info"]["username"]]).fetchall()
+    classes = cur.execute(sql, [session["user_info"]["username"]]).fetchall()
     classes_dict = []
 
     for i in range(len(classes)):

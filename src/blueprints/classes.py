@@ -28,15 +28,12 @@ def show_teacher_classpage(class_id):
 
     session["view"]["class_id"] = class_id
 
-    # get all assignments
     assignments = get_all_assignments(class_id)
-
-    print(assignments)
 
     return render_template("class_teacher.html", user_info=session["user_info"], class_info=class_info, assignments=assignments)
 
 
-@classes.route("/create-class", methods=["GET", "POST"])
+@classes.route("/create-class", methods=["POST"])
 @login_required
 @only_teachers
 def create_class():

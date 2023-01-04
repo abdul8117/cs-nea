@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Assignment - {{ assignment.title }}
+{% endblock %}
+
+{% block main %}
+
+    <section class="section" style="background-color: hsl(171, 100%, 41%);">
+        <h1 class="title">Assignment</h1>
+        <p><span class="bold">Teacher: </span>{{class_info.suffix }} {{ class_info.teacher_surname }}</p>
+        <p><span class="bold">Subject: </span>{{ class_info.subject}}</p>
+        <p><span class="bold">Date set: </span>{{ assignment.date_set }}</p>
+        <p><span class="bold">Date due: </span>{{ assignment.due_date }}</p>
+    </section>
+
+    <section class="section">
+        <div class="block">
+            <h1 class="title">
+                {{ assignment.title }}
+            </h1>
+
+            <p><span class="bold">Assignment details<br></span>{{ assignment.description }}</p>
+        </div>
+
+        <!-- Only display if there are resources attached -->
+        <div class="block">
+            <span class="bold">Attached resources</span>
+            TODO
+        </div>
+
+        <div class="block">
+            <form action="">
+                <div class="file block">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="student-work">
+                        <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                            Choose a file…
+                        </span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="control block">
+                    <input type="submit" class="button is-primary" value="Submit">
+                </div>
+            </form>
+        </div>
+
+    </section>
+
+{% endblock %}
