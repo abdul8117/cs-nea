@@ -12,7 +12,6 @@ from src.helpers import login_required
 
 import sqlite3
 
-
 app = Flask(__name__)
 
 # Session config

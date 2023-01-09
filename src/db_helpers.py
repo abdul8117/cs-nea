@@ -25,6 +25,12 @@ def insert_user_into_database(details, is_student):
         (username, first_name, surname, suffix, email, password, salt) 
         VALUES (?, ?, ?, ?, ?, ?, ?)"
         """
+
+        print(f"""
+        \n\n\nHERE
+        {details}
+        """)
+
         cur.execute(sql, details)
     
     con.commit()
@@ -281,29 +287,39 @@ def get_all_assignments(class_id):
     return assignments
 
 
-def get_assignment(assignment_id):
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
+# def get_assignment(assignment_id):
+#     con = sqlite3.connect(DB_PATH)
+#     cur = con.cursor()
 
-    assignments_query = cur.execute("SELECT * FROM assignments WHERE assignment_id = ?", [assignment_id]).fetchone()
-    print(assignments_query)
+#     assignments_query = cur.execute("SELECT * FROM assignments WHERE assignment_id = ?", [assignment_id]).fetchone()
+#     print(assignments_query)
 
-    date_set = time.strftime("%d/%m/%y", time.localtime(assignments_query[4]))
-    due_date = time.strftime("%d/%m/%y", time.localtime(assignments_query[5]))
+#     date_set = time.strftime("%d/%m/%y", time.localtime(assignments_query[4]))
+#     due_date = time.strftime("%d/%m/%y", time.localtime(assignments_query[5]))
 
-    is_overdue = False
-    if int(assignments_query[5]) < time.time():
-        is_overdue = True
+#     is_overdue = False
+#     if int(assignments_query[5]) < time.time():
+#         is_overdue = True
 
-    assignment = {
-        "id": assignments_query[0],
-        "class_id": assignments_query[1],
-        "title": assignments_query[2],
-        "description": assignments_query[3],
-        "date_set": date_set,
-        "due_date": due_date,
-        "overdue": is_overdue
-    }
-    print(assignment)
 
-    return assignment
+#     # Get attachemnts 
+#     sql = """
+#     SELECT attachment_file_path, file_name FROM attachments WHERE assignment_id = ?
+#     """
+#     attachment = cur.execute(sql, [assignment_id]).fetchall()[0]
+#     print("\n\nATTACHMENT ",attachment)
+
+#     assignment = {
+#         "id": assignments_query[0],
+#         "class_id": assignments_query[1],
+#         "title": assignments_query[2],
+#         "description": assignments_query[3],
+#         "attachment_path": attachment[0],
+#         "attachment_name": attachment[1],
+#         "date_set": date_set,
+#         "due_date": due_date,
+#         "overdue": is_overdue
+#     }
+#     print(assignment)
+
+#     return assignment
