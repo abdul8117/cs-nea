@@ -246,11 +246,15 @@ def add_student_to_class(code):
     sql_query = """
     INSERT INTO students_in_classes (class_id, username) VALUES(?, ?)
     """
-
-    cur.execute(sql_query, [code.split("-")[0], session["user_info"]["username"]])
-    
-    con.commit()
-    cur.close()
+    try:
+        cur.execute(sql_query, [code.split("-")[0], session["user_info"]["username"]])
+        con.commit()
+        cur.close()
+        return True
+    except:
+        con.commit()
+        cur.close()
+        return False
 
 
 def get_all_assignments(class_id):

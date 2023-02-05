@@ -59,7 +59,11 @@ def join_class():
     if request.method == "POST":
         class_code = request.form.get("class-code")
 
-        if class_code:
-            add_student_to_class(class_code)
+        # TODO: Test the below logic
+
+        if not(class_code):
+            flash("Class code not given.")
+        elif not(add_student_to_class(class_code)):
+            flash("Class not found.")
 
     return redirect(url_for("home.student_home"))
