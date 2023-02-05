@@ -21,10 +21,6 @@ app.config["ATTACHMENTS_UPLOAD"] = "static/attachments"
 app.config["SESSION_COOKIE_PATH"] = "/"
 Session(app)
 
-
-# app.register_blueprint(login_blueprint)
-# app.register_blueprint(register_blueprint)
-
 app.register_blueprint(auth_bp)
 app.register_blueprint(home_bp)
 app.register_blueprint(profile_bp)

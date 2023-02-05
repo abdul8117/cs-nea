@@ -13,8 +13,25 @@
     <section class="section" style="background-color: hsl(171, 100%, 41%);">
         <h1 class="title">Learning Management System</h1>
     </section>
-       
+
     <section class="section">
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="message is-danger">
+            <div class="message-header">
+                <p>Error</p>
+            </div>
+            <div class="message-body">
+                <ul>
+                    {% for message in messages %}
+                    <li>{{message}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
 
         <div class="tabs is-large is-boxed">
             <ul>
@@ -53,7 +70,7 @@
                     <input type="email" name="email" class="input" placeholder="Email">
                 </div>
             </div>
-                
+
             <div class="field">
                 <label for="" class="label">Password</label>
                 <div class="control">
@@ -147,7 +164,7 @@
                     <input type="email" name="email" class="input" placeholder="Email">
                 </div>
             </div>
-                
+
             <div class="field">
                 <label for="" class="label">Password</label>
                 <div class="control">
@@ -173,7 +190,7 @@
 
             <br>
         </form>
-    
+
     </section>
 
     <script src="../static/js/register.js"></script>
@@ -181,4 +198,5 @@
     <script src="https://kit.fontawesome.com/02402844ea.js" crossorigin="anonymous"></script>
 
 </body>
+
 </html>

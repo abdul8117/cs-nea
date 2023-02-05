@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, url_for, request, redirect, render_template, session
+from flask import Flask, Blueprint, url_for, request, redirect, render_template, session, flash
 from flask_session import Session
 
 from src.helpers import create_username, generate_salt
@@ -19,6 +19,7 @@ def register():
 
     if request.method == "POST":
 
+        # get form data
         first_name = request.form.get("first_name").lower().strip()
         surname = request.form.get("surname").lower().strip()
         email = request.form.get("email").lower().strip()
@@ -36,13 +37,13 @@ def register():
         # First and surnames can only be one word and completely alphabetical
         if not(first_name and surname):
             # checks if the name fields are not left blank
-            print("Name(s) not given")
+            flash("Name(s) not given.")
             return redirect(url_for("auth.register"))
         elif not(first_name.isalpha() and surname.isalpha()):
-            print("Name(s) must be completely alphabteical")
+            flash("Name(s) must be completely alphabteical.")
             return redirect(url_for("auth.register"))
         elif len(first_name.split()) != 1 or len(surname.split()) != 1:
-            print("Name(s) must be only one word")
+            flash("Name(s) must be only one word.")
             return redirect(url_for("auth.register"))
         
         # email
