@@ -43,10 +43,14 @@ def create_class():
         year_group = request.form.get("year-group")
         section = request.form.get("section")
 
-        if section != "":
+        if not(class_title) or not(subject_id) or not(year_group):
+            flash("Field(s) not given.")
+            return redirect(url_for("home.teacher_home"))
+
+        if not(section):
             section = None
         
-        print(class_title, subject_id, year_group, section)
+        print("CREATING CLASS:", class_title, subject_id, year_group, section)
 
         create_class_db(class_title, subject_id, year_group, section)
 
