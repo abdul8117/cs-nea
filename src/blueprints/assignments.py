@@ -12,12 +12,23 @@ assignments = Blueprint("assignments", __name__)
 @only_teachers
 def create_assignment():
     title = request.form.get("assignment-title")
+    if not(title):
+        flash("Title not given.")
+    
     description = request.form.get("assignment-description")
-    date_set = int(time.time())
 
     due_date = request.form.get("due-date").split("-")
+    if not(due_date):
+        flash("Due date not given.")
+        return redirect(f"teacher/class/{session['view']['class_id']}")
+
     due_date = datetime.datetime(int(due_date[0]), int(due_date[1]), int(due_date[2]))
     due_date = calendar.timegm(due_date.timetuple())
+    date_set = int(time.time())
+
+    # TODO: Test the above
+
+
 
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
