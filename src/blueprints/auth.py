@@ -43,19 +43,19 @@ def register():
             flash("Name(s) must be completely alphabteical.")
             return redirect(url_for("auth.register"))
         elif len(first_name.split()) != 1 or len(surname.split()) != 1:
-            flash("Name(s) must be only one word.")
+            flash("Name(s) must only be one word.")
             return redirect(url_for("auth.register"))
         
         # email
         if not(email):
-            print("Email not given")
-        # TODO Validate email(?)
+            flash("Email not given.")
 
         # both password fields must be given
         if not(password and confirm_password):
-            redirect(url_for("auth.register"))
+            flash("Password field(s) not given.")
+            return redirect(url_for("auth.register"))
         elif password != confirm_password:
-            print("Passwords do not match")
+            flash("Passwords do not match")
             return redirect(url_for("auth.register"))
 
         # Create username
@@ -127,20 +127,20 @@ def login():
 
         if not(username and password):
             print("username or password not given")
-            return redirect(url_for("login"))
-
-        if "_s" in username:
-            db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchone()[0]
-            db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
-            salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
-        elif "_t" in username:
-            db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
-            salt = cur.execute("SELECT salt FROM teachers WHERE username = ?", [username]).fetchone()[0]
-        else:
-            db_username = None
-            db_password = None
-            salt = None
+            return redirect(url_for("auth.login"))
+        
+        db_username, db_password, salt = None, None, None
+        try:
+            if "_s" in username:
+                db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchone()[0]
+                db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
+                salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
+            elif "_t" in username:
+                db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
+                db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
+                salt = cur.execute("SELECT salt FROM teachers WHERE username = ?", [username]).fetchone()[0]
+        except:
+            pass
 
 
         print("\n\n\n")
@@ -152,20 +152,22 @@ def login():
         # print(f"DB KEY {key}")
         print("\n\n\n")
 
-        pw_hash_check = hashlib.sha512()
-        pw_hash_check.update(bytes(password + salt, encoding="utf-16"))
-        
         if not(db_username):
             # username not found
-            print("// USERNAME DOES NOT MATCH.")
-            return render_template("apology.html", error="USERNAME NOT FOUND")
-        elif db_password != pw_hash_check.digest():
+            flash("Username not found.")
+            return redirect(url_for("auth.login"))
+        elif not(db_password):
+            flash("Password not given.")
+
+        pw_hash_check = hashlib.sha512()
+        pw_hash_check.update(bytes(password + salt, encoding="utf-16"))
+        if db_password != pw_hash_check.digest():
             # password is wrong
-            print("// PASSWORD DOES NOT MATCH.")
-            return render_template("apology.html", error="PASSWORD DOES NOT MATCH")
+            flash("Incorrect password.")
+            return redirect(url_for("auth.login"))
 
 
-        if "_s" in username: 
+        if "_s" in username:
 
             session["user_info"] = {
                 "username": username,
