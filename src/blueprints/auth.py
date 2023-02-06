@@ -57,6 +57,14 @@ def register():
         elif password != confirm_password:
             flash("Passwords do not match")
             return redirect(url_for("auth.register"))
+        
+        # year group, section
+        if not(year_group):
+            flash("Year group not given.")
+            return redirect(url_for("auth.register"))
+        elif not(section):
+            flash("Section not given.")
+            return redirect(url_for("auth.register"))
 
         # Create username
         username = create_username(first_name, surname, is_student)
