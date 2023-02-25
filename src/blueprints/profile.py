@@ -1,6 +1,7 @@
-# user will have the abiltiy to edit their user info
+from ..student import Student
+from ..teacher import Teacher
 
-from flask import Flask, Blueprint, render_template, request, session
+from flask import Flask, Blueprint, render_template, request, session, flash, redirect
 
 import sqlite3
 
@@ -12,7 +13,6 @@ profile = Blueprint("profile", __name__)
 @profile.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile_page():
-    # TODO allow the ability to edit info
 
     session["view"]["class_id"] = None
 
@@ -35,7 +35,7 @@ def profile_page():
             new_email = request.form.get("new-email")
             update_email(new_email)
         
-        return render_template("profile.html", user_info=session["user_info"])
+        return redirect("/profile")
     else:
         return render_template("profile.html", user_info=session["user_info"])
 

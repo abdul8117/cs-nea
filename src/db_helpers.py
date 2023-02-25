@@ -5,38 +5,6 @@ import sqlite3, random, time
 
 DB_PATH = "db/database.db"
 
-
-def insert_user_into_database(details, is_student):
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
-    
-    if is_student:
-        sql = """
-        INSERT INTO 
-        students 
-        (username, first_name, surname, year_group, section, email, password, salt) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """
-        cur.execute(sql, details)
-    else:
-        sql = """
-        INSERT INTO 
-        teachers 
-        (username, first_name, surname, suffix, email, password, salt) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)"
-        """
-
-        print(f"""
-        \n\n\nHERE
-        {details}
-        """)
-
-        cur.execute(sql, details)
-    
-    con.commit()
-    con.close()
-
-
 def get_subject_from_id(id):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
@@ -54,16 +22,6 @@ def get_teacher_name(username):
     print(teacher_name)
 
     return teacher_name[0].capitalize() + " " + teacher_name[1].capitalize()
-
-
-def get_student_info(username):
-    # TODO
-    pass
-
-
-def get_teacher_info(username):
-    # TODO
-    pass
 
 
 def get_class_info(class_id):
@@ -139,7 +97,7 @@ def update_name(f_name, s_name):
     old_username = session["user_info"]["username"]
     new_username = create_username(f_name, s_name, session["user_info"]["is_student"])
 
-    # update first name, surname, and username 
+    # update first name, surname, and username
     if session["user_info"]["is_student"]:
         sql_query = """
         UPDATE students
@@ -275,7 +233,6 @@ def get_all_assignments(class_id):
         date_set = time.strftime("%d/%m/%y", time.localtime(assignments_query[i][4]))
         due_date = time.strftime("%d/%m/%y", time.localtime(assignments_query[i][5]))
 
-
         assignment = {
             "id": assignments_query[i][0],
             "class_id": assignments_query[i][1],
@@ -289,41 +246,3 @@ def get_all_assignments(class_id):
         assignments.append(assignment)
 
     return assignments
-
-
-# def get_assignment(assignment_id):
-#     con = sqlite3.connect(DB_PATH)
-#     cur = con.cursor()
-
-#     assignments_query = cur.execute("SELECT * FROM assignments WHERE assignment_id = ?", [assignment_id]).fetchone()
-#     print(assignments_query)
-
-#     date_set = time.strftime("%d/%m/%y", time.localtime(assignments_query[4]))
-#     due_date = time.strftime("%d/%m/%y", time.localtime(assignments_query[5]))
-
-#     is_overdue = False
-#     if int(assignments_query[5]) < time.time():
-#         is_overdue = True
-
-
-#     # Get attachemnts 
-#     sql = """
-#     SELECT attachment_file_path, file_name FROM attachments WHERE assignment_id = ?
-#     """
-#     attachment = cur.execute(sql, [assignment_id]).fetchall()[0]
-#     print("\n\nATTACHMENT ",attachment)
-
-#     assignment = {
-#         "id": assignments_query[0],
-#         "class_id": assignments_query[1],
-#         "title": assignments_query[2],
-#         "description": assignments_query[3],
-#         "attachment_path": attachment[0],
-#         "attachment_name": attachment[1],
-#         "date_set": date_set,
-#         "due_date": due_date,
-#         "overdue": is_overdue
-#     }
-#     print(assignment)
-
-#     return assignment

@@ -1,8 +1,12 @@
+from ..user import User
+from ..student import Student
+from ..teacher import Teacher
+
 from flask import Flask, Blueprint, url_for, request, redirect, render_template, session, flash
 from flask_session import Session
 
 from src.helpers import create_username, generate_salt
-from src.db_helpers import insert_user_into_database, get_teacher_info, get_student_info
+# from src.db_helpers import get_teacher_info, get_student_info
 
 import sqlite3, hashlib
 
@@ -23,8 +27,8 @@ def register():
         first_name = request.form.get("first_name").lower().strip()
         surname = request.form.get("surname").lower().strip()
         email = request.form.get("email").lower().strip()
-        password = request.form.get("password")
-        confirm_password = request.form.get("confirm-password")
+        password = request.form.get("password").strip()
+        confirm_password = request.form.get("confirm_password").strip()
         
         if request.form.get("account_type") == "student":
             is_student = True
@@ -51,6 +55,7 @@ def register():
             flash("Email not given.")
 
         # both password fields must be given
+        print("HERE", password, confirm_password)
         if not(password and confirm_password):
             flash("Password field(s) not given.")
             return redirect(url_for("auth.register"))
@@ -58,52 +63,26 @@ def register():
             flash("Passwords do not match")
             return redirect(url_for("auth.register"))
         
-        # year group, section
-        if not(year_group):
-            flash("Year group not given.")
-            return redirect(url_for("auth.register"))
-        elif not(section):
-            flash("Section not given.")
-            return redirect(url_for("auth.register"))
 
-        # Create username
-        username = create_username(first_name, surname, is_student)
-        
-        # Hash password using a salt, then encrypt it
-        salt = generate_salt()
-        pw_hash = hashlib.sha512()
-        pw_hash.update(bytes(password + salt, encoding="utf-16"))
-        pw_hash = pw_hash.digest() 
-
-        # Insert into DB
+        # Create object
         if is_student:
-            details = (username, first_name, surname, year_group, section, email, pw_hash, salt)
-        else:
-            details = (username, first_name, surname, suffix, email, pw_hash, salt)
-        
-        insert_user_into_database(details, is_student)
-
-        if is_student:
-            session["user_info"] = {
-                "username": username,
-                "first_name": first_name,
-                "surname": surname,
-                "year_group": year_group,
-                "section": section,
-                "email": email,
-                "is_student": is_student
-            }
-        else:
-            session["user_info"] = {
-                "username": username,
-                "first_name": first_name,
-                "surname": surname,
-                "suffix": suffix,
-                "email": email,
-                "is_student": is_student
-            }
+            # a username and the password hash are created when creating an instance of the student or teacher class
+            if not(year_group):
+                flash("Year group not given.")
+                return redirect(url_for("auth.register"))
+            elif not(section):
+                flash("Section not given.")
+                return redirect(url_for("auth.register"))
             
+            student = Student(first_name, surname, email, password, year_group, section)
+            student.insert_into_db()
+            student.save_into_session()
 
+        else:
+            teacher = Teacher(first_name, surname, suffix, email, password)
+            teacher.insert_into_db()
+            teacher.save_into_session()
+        
         return redirect(url_for("index"))
 
     else:
@@ -134,46 +113,18 @@ def login():
         cur = con.cursor()
 
         if not(username and password):
-            print("username or password not given")
+            flash("Username and/or password not given.")
+            return redirect(url_for("auth.login"))
+
+
+        query = User.login_query(username)
+        if query == -1:
+            flash("User not found.")
             return redirect(url_for("auth.login"))
         
-        db_username, db_password, salt = None, None, None
-        try:
-            if "_s" in username:
-                db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchone()[0]
-                db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
-                salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
-            elif "_t" in username:
-                db_username = cur.execute("SELECT username FROM teachers WHERE username = ?", [username]).fetchone()[0]
-                db_password = cur.execute("SELECT password FROM teachers WHERE username = ?", [username]).fetchone()[0]
-                salt = cur.execute("SELECT salt FROM teachers WHERE username = ?", [username]).fetchone()[0]
-        except:
-            pass
-
-
-        print("\n\n\n")
-        print(f"FORM USERNAME - {username}")
-        print(f"FORM PASSWORD - {password}")
-        print(f"DB USERNAME - {db_username}")
-        print(f"DB PASSWORD - {db_password}")
-        # print(f"DB SALT {salt}")
-        # print(f"DB KEY {key}")
-        print("\n\n\n")
-
-        if not(db_username):
-            # username not found
-            flash("Username not found.")
-            return redirect(url_for("auth.login"))
-        elif not(db_password):
-            flash("Password not given.")
-
-        pw_hash_check = hashlib.sha512()
-        pw_hash_check.update(bytes(password + salt, encoding="utf-16"))
-        if db_password != pw_hash_check.digest():
-            # password is wrong
+        if User.check_hash(password, query["salt"], query["password_hash"]) == -1:
             flash("Incorrect password.")
             return redirect(url_for("auth.login"))
-
 
         if "_s" in username:
 
@@ -203,7 +154,6 @@ def login():
             cur.close()
             
             return redirect(url_for("home.teacher_home"))
-
 
     else:
         return render_template("login.html")
