@@ -48,7 +48,7 @@
 
                     <div id="file" class="file has-name block">
                         <label class="file-label">
-                            <input class="file-input" type="file" name="attachments">
+                            <input class="file-input" type="file" name="attachment">
                             <span class="file-cta">
                                 <span class="file-icon">
                                     <i class="fas fa-upload"></i>
@@ -57,10 +57,7 @@
                                     Choose a file…
                                 </span>
                             </span>
-                            <div id="names">
-                                <span class="file-name">
-                                    No file uploaded
-                                </span>
+                            <div id="name">
                                 <span class="file-name">
                                     No file uploaded
                                 </span>
@@ -72,7 +69,7 @@
 
                     <script>
                         const fileInput = document.querySelector("#file input[type=file]");
-                        const fileNames = document.querySelector("#names");
+                        const fileNames = document.querySelector("#name");
                         fileInput.onchange = function addFile() {
                             let file = document.createElement("span");
                             let text = document.createTextNode(fileInput.file[0].name)

@@ -26,10 +26,6 @@ def create_assignment():
     due_date = calendar.timegm(due_date.timetuple())
     date_set = int(time.time())
 
-    # TODO: Test the above
-
-
-
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
@@ -43,31 +39,19 @@ def create_assignment():
     con.commit()
 
     assignment_id = cur.execute("SELECT assignment_id FROM assignments ORDER BY assignment_id DESC").fetchall()[0][0]
+    cur.close()
 
     if 'file' in request.files:
-        files = request.files.getlist("attachments")
-        for file in files:
-            path = f"C:/Users/abdul/Desktop/GitHub/cs-nea/static/attachments/{session['view']['class_id']}/{assignment_id}"
-            sql = """
-            INSERT INTO attachments
-            (assignment_id, class_id, attachment_file_path, file_name)
-            VALUES (?, ?, ?, ?)
-            """
+        file = request.files.getlist("attachment")
+        filename = secure_filename(file.filename)
+        path = f"attachments/{session['view']['class_id']}"
 
-            cur.execute(sql, [assignment_id, session["view"]["class_id"], path, file.filename])
-            con.commit()
+        try:
+            os.mkdir(path + "/{assignment_id}")
+        except FileNotFoundError:
+            os.mkdir(path)
 
-            try:
-                os.mkdir(f"static/attachments/{session['view']['class_id']}")
-            except FileExistsError:
-                try:
-                    os.mkdir(f"static/attachments/{session['view']['class_id']}/{assignment_id}")
-                except:
-                    pass
-
-            file.save(os.path.join(path, file.filename))
-    
-    cur.close()
+        file.save(os.path.join(path, filename))
 
     return redirect(f"teacher/class/{session['view']['class_id']}")
 
