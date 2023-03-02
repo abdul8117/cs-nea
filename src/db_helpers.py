@@ -215,6 +215,24 @@ def add_student_to_class(code):
         return False
 
 
+def get_list_of_students_in_class():
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+
+    sql = """
+    SELECT students.first_name, students.surname
+    FROM students
+    INNER JOIN students_in_classes
+    ON students.username = students_in_classes.username
+    """
+
+    students = cur.execute(sql).fetchall()
+
+    cur.close()
+
+    return students
+
+
 def get_all_assignments(class_id):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()

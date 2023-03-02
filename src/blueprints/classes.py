@@ -3,7 +3,7 @@ from flask import Flask, Blueprint, render_template, session, redirect, url_for,
 import sqlite3
 
 from src.helpers import login_required, only_students, only_teachers
-from src.db_helpers import get_subject_from_id, get_class_info, create_class_db, add_student_to_class, get_all_assignments
+from src.db_helpers import get_class_info, create_class_db, add_student_to_class, get_all_assignments, get_list_of_students_in_class
 
 classes = Blueprint("classes", __name__)
 
@@ -30,7 +30,9 @@ def show_teacher_classpage(class_id):
 
     assignments = get_all_assignments(class_id)
 
-    return render_template("class_teacher.html", user_info=session["user_info"], class_info=class_info, assignments=assignments)
+    students = get_list_of_students_in_class()
+
+    return render_template("class_teacher.html", user_info=session["user_info"], class_info=class_info, assignments=assignments, students=students)
 
 
 @classes.route("/create-class", methods=["POST"])

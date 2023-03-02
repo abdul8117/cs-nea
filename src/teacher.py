@@ -47,5 +47,5 @@ class Teacher(User):
             "surname": self.surname,
             "suffix": self.suffix,
             "email": self.email,
-            "is_student": False
+            "is_student": False,
         }

@@ -16,10 +16,10 @@
 
     <section class="section">
         <div class="block">
+            {% include "flash.html" %}
             <h1 class="title">
                 {{ assignment.title }}
             </h1>
-
             <p><span class="bold">Assignment details<br></span>{{ assignment.description }}</p>
         </div>
 
@@ -38,38 +38,63 @@
         {% endif %}
 
         {% if user_info.is_student %}
+            <!-- For students: show the file attached with the assignment and a button to mark the assignment as complete. -->
+
+            {% if completed %}
+                <div class="message is-success">
+                    <div class="message-header">You have submitted this assignment.</div>
+                </div>
+            {% endif %}
+
             <div class="block">
-                <form action="/assignment/{{ class_info.id }}/{{ assignment.id }}/student-submission" enctype="multipart/form-data" method="post">
-                    <span class="bold">Upload your work</span>
-                    <div id="file-js-example" class="file has-name">
-                        <label class="file-label">
-                            <input class="file-input" type="file" name="student_upload">
-                            <span class="file-cta">
-                                <span class="file-icon">
-                                    <i class="fas fa-upload"></i>
-                                </span>
-                                <span class="file-label">
-                                    Choose a file…
-                                </span>
-                            </span>
-                            <span class="file-name">
-                                No file uploaded
-                            </span>
-                        </label>
-                    </div>
+                <a href="/assignment/{{ class_info.id }}/{{ assignment.id }}/download-attachment" target="_blank">
+                    <button class="button">
+                    <span class="icon"><i class="fa-solid fa-download"></i></span>
+                    <span>
+                        Download attachment
+                    </span>
+                    </button>
+                </a>
+                <br><br>
+                <a href="/assignment/{{ class_info.id }}/{{ assignment.id }}/mark-as-completed">
+                    <button class="button is-primary">
+                    <span class="icon"><i class="fa-solid fa-check"></i></span>
+                    <span>
+                        Mark as complete
+                    </span>
+                    </button>
+                </a>
 
-
-                    <div class="control block">
-                        <input type="submit" class="button is-primary" value="Submit">
-                    </div>
-                </form>
             </div>
         
         {% else %}
             
-            <!-- For teachers: list of students who have submitted their work, with thier attachment. A second list of those who have not. -->
+            <!-- For teachers: list of students who have submitted their work. A second list of those who have not. -->
+            <div class="block">
+                <span class="bold">Students who have marked this assignment as complete:</span>
+                <ul>
+                    {% if submitted %}
+                        {% for student in submitted %}
+                            {% if student[2] == 1 %}
+                                <li>{{ student[0].capitalize() }} {{ student[1].capitalize() }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <li>No students have marked this assignment as complete.</li>
+                    {% endif %}
+                </ul>
+            </div>
 
-        
+            <div class="block">
+                <span class="bold">Students who have not marked this assignment as complete:</span>
+                <ul>
+                    {% for student in submitted %}
+                        {% if student[2] == 0 %}
+                            <li>{{ student[0].capitalize() }} {{ student[1].capitalize() }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
 
         
