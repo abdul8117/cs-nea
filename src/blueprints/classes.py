@@ -12,28 +12,21 @@ classes = Blueprint("classes", __name__)
 @only_students
 def show_student_classpage(class_id):
     class_info = get_class_info(class_id)
-
     session["view"]["class_id"] = class_id
-
     assignments = get_all_assignments(class_id)
 
     return render_template("class_student.html", user_info=session["user_info"], class_info=class_info, assignments=assignments)
-
 
 @classes.route("/teacher/class/<int:class_id>")
 @login_required
 @only_teachers
 def show_teacher_classpage(class_id):
     class_info = get_class_info(class_id)
-
     session["view"]["class_id"] = class_id
-
     assignments = get_all_assignments(class_id)
-
     students = get_list_of_students_in_class()
 
     return render_template("class_teacher.html", user_info=session["user_info"], class_info=class_info, assignments=assignments, students=students)
-
 
 @classes.route("/create-class", methods=["POST"])
 @login_required
@@ -52,20 +45,15 @@ def create_class():
         if not(section):
             section = None
         
-        print("CREATING CLASS:", class_title, subject_id, year_group, section)
-
         create_class_db(class_title, subject_id, year_group, section)
 
     return redirect(url_for("home.teacher_home"))
-
 
 @classes.route("/join-class", methods=["POST"])
 @only_students
 def join_class():
     if request.method == "POST":
         class_code = request.form.get("class-code")
-
-        # TODO: Test the below logic
 
         if not(class_code):
             flash("Class code not given.")

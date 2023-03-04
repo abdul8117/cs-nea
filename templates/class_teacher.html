@@ -1,128 +1,114 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    {% if class_info.section %}
-        Class - Y{{ class_info.year_group }}{{ class_info.section }} {{ class_info.title }}
-    {% else %}
-        Class - Y{{ class_info.year_group }} {{ class_info.title }}
-    {% endif %}
+{% if class_info.section %}
+Class - Y{{ class_info.year_group }}{{ class_info.section }} {{ class_info.title }}
+{% else %}
+Class - Y{{ class_info.year_group }} {{ class_info.title }}
+{% endif %}
 {% endblock %}
 
 {% block main %}
+<section class="section" style="background-color: hsl(171, 100%, 41%);">
+  <h1 class="title">{{ class_info.title }}</h1>
+  <p><span class="bold">Join code for students: </span>{{ class_info.join_code }}</p>
+  <p><span class="bold">Teacher: </span>{{ class_info.teacher_first_name }} {{ class_info.teacher_surname }}</p>
+  {% if class_info.section %}
+  <p><span class="bold">Class: </span>{{ class_info.year_group }}{{ class_info.section }}</p>
+  {% else %}
+  <p><span class="bold">Class: </span>Year {{ class_info.year_group }}</p>
+  {% endif %}
+  <p><span class="bold">No. of students: </span>{{ class_info.class_size }} -
+    {% for student in students %}
+    {{ student[0].capitalize() }} {{ student[1].capitalize() }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+  </p>
+</section>
 
-    <section class="section" style="background-color: hsl(171, 100%, 41%);">
-        <h1 class="title">{{ class_info.title }}</h1>
-        <p><span class="bold">Join code for students: </span>{{ class_info.join_code }}</p>
-        <p><span class="bold">Teacher: </span>{{ class_info.teacher_first_name }} {{ class_info.teacher_surname }}</p>
-        {% if class_info.section %}
-            <p><span class="bold">Class: </span>{{ class_info.year_group }}{{ class_info.section }}</p>
-        {% else %} 
-            <p><span class="bold">Class: </span>Year {{ class_info.year_group }}</p>
-        {% endif %}
-        <p><span class="bold">No. of students: </span>{{ class_info.class_size }} - 
-        {% for student in students %}
-            {{ student[0].capitalize() }} {{ student[1].capitalize() }}{% if not loop.last %}, {% endif %}
-        {% endfor %}
-        </p>
-    </section>
+<section class="section">
+  <div class="block">
+    <div class="block">
+      <button id="btn-js" class="button is-primary" name="create-assignment">
+        <span class="icon">
+          <i class="fa-solid fa-plus"></i>
+        </span>
+        <span>Create an assignment</span>
+      </button>
+    </div>
 
-    <section class="section">
-
-        <div class="block">
-            <div class="block">
-                <button id="btn-js" class="button is-primary" name="create-assignment">
-                    <span class="icon">
-                        <i class="fa-solid fa-plus"></i>
-                    </span>
-                    <span>Create an assignment</span>
-                </button>
-            </div>
-
-            <div id="form-js" style="display: none;" >
-                <form action="/create-assignment" method="post", enctype="multipart/form-data">
-                    <div class="field">
-                        <label for="" class="label">Title</label>
-                        <input type="text" name="assignment-title" class="input" placeholder="Title">
-                    </div>
-
-                    <div class="field">
-                        <label for="" class="label">Description</label>
-                        <input type="text" name="assignment-description" class="input" placeholder="Details">
-                    </div>
-
-                    <div id="file-js" class="file has-name block">
-                        <label class="file-label">
-                            <input class="file-input" type="file" name="attachment">
-                            <span class="file-cta">
-                                <span class="file-icon">
-                                    <i class="fas fa-upload"></i>
-                                </span>
-                                <span class="file-label">
-                                    Choose a file…
-                                </span>
-                            </span>
-                            <div id="name">
-                                <span class="file-name">
-                                    No file uploaded
-                                </span>
-                            </div>
-                        </label>
-                    </div>
-
-
-
-                    <script>
-                        const fileInput = document.querySelector('#file-js input[type=file]');
-                        fileInput.onchange = () => {
-                            if (fileInput.files.length > 0) {
-                            const fileName = document.querySelector('#file-js .file-name');
-                            fileName.textContent = fileInput.files[0].name;
-                            }
-                        }
-                    </script>
-
-
-                    <div class="field is-group">
-                        <label for="" class="label">Due date</label>
-                        <input type="date" name="due-date" class="input">
-                    </div>
-
-                    <div class="control">
-                        <input type="submit" value="Create assignment" class="button is-primary">
-                    </div>
-                    
-                </form>
-            </div>
-
+    <div id="form-js" style="display: none;">
+      <form action="/create-assignment" method="post" , enctype="multipart/form-data">
+        <div class="field">
+          <label for="" class="label">Title</label>
+          <input type="text" name="assignment-title" class="input" placeholder="Title">
         </div>
 
-        <div class="tabs is-large is-boxed">
-            <ul>
-                <li id="pending-tab" class="is-active"><a>Pending</a></li>
-            </ul>
+        <div class="field">
+          <label for="" class="label">Description</label>
+          <input type="text" name="assignment-description" class="input" placeholder="Details">
         </div>
 
-
-
-        <div id="pending-assignments" class="tile is-ancestor">
-            <div class="tile is-vertical is-parent">
-                {% for i in range(assignments|count) %}
-                    <div class="tile is-child">
-                        <a href="/assignment/{{ class_info.id }}/{{ assignments[i].id }}">
-                            <div class="box assignment-box">
-                                <p class="title">{{ assignments[i].title }}</p>
-                                <p><span class="bold">Due date: </span>{{ assignments[i].due_date }}</p>
-                                <p>{{ assignments[i].description }}</p>
-                            </div>
-                        </a>
-                    </div>
-                {% endfor %}
+        <div id="file-js" class="file has-name block">
+          <label class="file-label">
+            <input class="file-input" type="file" name="attachment">
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label">Choose a file…</span>
+            </span>
+            <div id="name">
+              <span class="file-name">No file uploaded</span>
             </div>
+          </label>
         </div>
-        
-    </section>
 
-    <script src="{{ url_for('static', filename='js/pending_overdue_tabs.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/btn_show_form.js') }}"></script>
+        <script>
+          const fileInput = document.querySelector('#file-js input[type=file]');
+          fileInput.onchange = () => {
+            if (fileInput.files.length > 0) {
+              const fileName = document.querySelector('#file-js .file-name');
+              fileName.textContent = fileInput.files[0].name;
+            }
+          }
+        </script>
+
+        <div class="field is-group">
+          <label for="" class="label">Due date</label>
+          <input type="date" name="due-date" class="input">
+        </div>
+
+        <div class="control">
+          <input type="submit" value="Create assignment" class="button is-primary">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="tabs is-large is-boxed">
+    <ul>
+      <li id="pending-tab" class="is-active"><a>Pending</a></li>
+    </ul>
+  </div>
+
+  <div id="pending-assignments" class="tile is-ancestor">
+    <div class="tile is-vertical is-parent">
+      {% for i in range(assignments|count) %}
+      <div class="tile is-child">
+        <a href="/assignment/{{ class_info.id }}/{{ assignments[i].id }}">
+          <div class="box assignment-box">
+            <p class="title">{{ assignments[i].title }}</p>
+            <p><span class="bold">Due date: </span>{{ assignments[i].due_date }}</p>
+            <p>{{ assignments[i].description }}</p>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/pending_overdue_tabs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/btn_show_form.js') }}"></script>
 
 {% endblock %}

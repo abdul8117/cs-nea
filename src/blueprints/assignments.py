@@ -17,8 +17,8 @@ def create_assignment():
         flash("Title not given.")
     
     description = request.form.get("assignment-description")
-
     due_date = request.form.get("due-date").split("-")
+
     if not(due_date):
         flash("Due date not given.")
         return redirect(f"teacher/class/{session['view']['class_id']}")
@@ -45,12 +45,9 @@ def create_assignment():
         file = request.files['attachment']
         filename = secure_filename(file.filename)
         path = f"attachments/{session['view']['class_id']}"
-        print("HERE 1")
         try:
-            print("HERE 2")
             os.mkdir(path + f"/{assignment_id}/")
         except FileNotFoundError:
-            print("HERE 3")
             os.mkdir(path)
 
         file.save(os.path.join(path + f"/{assignment_id}/", filename))
@@ -87,7 +84,6 @@ def assignment_page(class_id, assignment_id):
     cur = con.cursor()
 
     assignments_query = cur.execute("SELECT * FROM assignments WHERE assignment_id = ?", [assignment_id]).fetchone()
-    print(assignments_query)
 
     date_set = time.strftime("%d/%m/%y", time.localtime(assignments_query[4]))
     due_date = time.strftime("%d/%m/%y", time.localtime(assignments_query[5]))
@@ -108,7 +104,6 @@ def assignment_page(class_id, assignment_id):
     except:
         # No attachments in this assignment
         attachment = [0, 0]
-
     
     assignment_info = {
         "id": assignments_query[0],
@@ -152,14 +147,13 @@ def assignment_page(class_id, assignment_id):
 
     return render_template("assignment.html", user_info=session["user_info"], class_info=class_info, assignment=assignment_info, submitted=submitted, completed=completed)
 
-
 @assignments.route("/assignment/<int:class_id>/<int:assignment_id>/download-attachment")
 @login_required
 def download_attachment(class_id, assignment_id):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
-    # get name of file
+    # get name of file and use that to retrieve the right file from the aattachments folder
     sql = """
     SELECT file_name 
     FROM attachments

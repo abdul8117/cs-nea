@@ -1,3 +1,5 @@
+# This module defines a Password class. It is used to create a password object that contains the user's password, a randomly generated salt, and a hash of the password and salt.
+
 from random import choice
 from string import ascii_letters
 
@@ -11,10 +13,6 @@ class Password:
     
     @staticmethod
     def generate_salt():
-        """
-        https://docs.python.org/3/library/secrets.html
-        """
-
         salt = ""
         length = choice(list(range(10, 21)))
         indexes = [x for x in range(len(ascii_letters))]

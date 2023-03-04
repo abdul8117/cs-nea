@@ -6,7 +6,6 @@ from flask import Flask, Blueprint, url_for, request, redirect, render_template,
 from flask_session import Session
 
 from src.helpers import create_username, generate_salt
-# from src.db_helpers import get_teacher_info, get_student_info
 
 import sqlite3, hashlib
 
@@ -14,7 +13,6 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
-
     """
     This function is called when a user visits the /register route.
     If the user is simply visiting the site, it is a GET request and the 'else' block of the selection below is executed.
@@ -22,7 +20,6 @@ def register():
     """
 
     if request.method == "POST":
-
         # get form data
         first_name = request.form.get("first_name").lower().strip()
         surname = request.form.get("surname").lower().strip()
@@ -77,14 +74,12 @@ def register():
             student = Student(first_name, surname, email, password, year_group, section)
             student.insert_into_db()
             student.save_into_session()
-
         else:
             teacher = Teacher(first_name, surname, suffix, email, password)
             teacher.insert_into_db()
             teacher.save_into_session()
         
         return redirect(url_for("index"))
-
     else:
         # Page accessed via a GET request
         return render_template("register.html")
@@ -92,7 +87,6 @@ def register():
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
-
     """
     This function is called when a user visits the /login route.
     Just like register(), the webpage is displayed when a GET request is received while a POST requests resuts in form input needing to be handled. 
@@ -127,7 +121,6 @@ def login():
             return redirect(url_for("auth.login"))
 
         if "_s" in username:
-
             session["user_info"] = {
                 "username": username,
                 "first_name": cur.execute("SELECT first_name FROM students WHERE username = ?", [username]).fetchone()[0].capitalize(),
@@ -154,7 +147,6 @@ def login():
             cur.close()
             
             return redirect(url_for("home.teacher_home"))
-
     else:
         return render_template("login.html")
 

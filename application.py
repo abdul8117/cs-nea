@@ -1,7 +1,7 @@
 from flask import Flask, url_for, redirect, render_template, request, session
 from flask_session import Session
-# from werkzeug import security
 
+# import all blueprints
 from src.blueprints.auth import auth as auth_bp
 from src.blueprints.home import home as home_bp
 from src.blueprints.profile import profile as profile_bp
@@ -25,7 +25,6 @@ app.register_blueprint(home_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(classes_bp)
 app.register_blueprint(assignments_bp)
-
 
 @app.route("/index")
 @app.route("/")

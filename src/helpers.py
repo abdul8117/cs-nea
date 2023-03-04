@@ -2,8 +2,9 @@ from flask import redirect, url_for, session
 
 from functools import wraps
 
-
 def login_required(f):
+    # https://flask.palletsprojects.com/en/2.2.x/patterns/viewdecorators/
+    # This function is adapted from the documentation above. It is used to check if a user is logged in before allowing them to access a page.
     @wraps(f)
     def decorated_function(*args, **kwargs):
         user_info = session.get("user_info")
@@ -14,7 +15,7 @@ def login_required(f):
 
     return decorated_function
 
-
+# The two functions below are used to check if a user is a student or a teacher before allowing them to access a page. If they are not, unauthorised.html is returned.
 def only_students(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -26,7 +27,6 @@ def only_students(f):
 
     return decorated_function
 
-
 def only_teachers(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -37,7 +37,6 @@ def only_teachers(f):
         return f(*args, **kwargs)
 
     return decorated_function
-
 
 def generate_salt():
     """

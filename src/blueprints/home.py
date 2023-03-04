@@ -11,7 +11,6 @@ home = Blueprint("home", __name__, url_prefix="/home")
 @login_required
 @only_students
 def student_home():
-
     if session.get("view") is None:
         session["view"]  = {
             "class_id": None
@@ -21,7 +20,6 @@ def student_home():
 
     # Get all class details from the database
     # teacher name, number of assignments due, number of overdue assignments
-
     # Query students_in_classes where username matches with the user logged in.
 
     con = sqlite3.connect("db/database.db")
@@ -41,7 +39,6 @@ def student_home():
     classes = cur.execute(sql, [session["user_info"]["username"]])
     classes = classes.fetchall()
     classes_dict = []
-    print(classes)
 
     for i in range(len(classes)):
         class_ = {
@@ -56,8 +53,6 @@ def student_home():
 
         classes_dict.append(class_)
 
-
-
     return render_template("home_student.html", user_info=session["user_info"], classes=classes_dict)
 
 
@@ -65,8 +60,6 @@ def student_home():
 @login_required
 @only_teachers
 def teacher_home():
-    print(session)
-
     if session.get("view") is None:
         session["view"]  = {
             "class_id": None
@@ -91,7 +84,6 @@ def teacher_home():
     classes_dict = []
 
     for i in range(len(classes)):
-
         # count the number of students in each class
         num_of_students = cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [classes[i][0]]).fetchone()[0]
 
@@ -107,7 +99,6 @@ def teacher_home():
         }
 
         classes_dict.append(class_)
-
 
     # get all subjects for the create class form
     subjects = get_all_subjects()

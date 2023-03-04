@@ -1,9 +1,10 @@
+# This module defines the Teacher class. It inherits from the User class.
+
 from src.user import User, DB_PATH
 
 from flask import session
 
 import sqlite3
-
 
 class Teacher(User):
     def __init__(self, first_name, surname, suffix, email, password):

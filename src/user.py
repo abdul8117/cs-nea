@@ -1,9 +1,10 @@
+# This module defines a User class.
+
 from src.password import Password
 
 import sqlite3
 
 DB_PATH = "db/database.db"
-
 
 class User:
     def __init__(self, first_name, surname, email, password=""):
@@ -56,4 +57,3 @@ class User:
 
         # Password matches
         return 1
-

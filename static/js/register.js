@@ -72,7 +72,7 @@
 // studentButton.onclick = function toggleStudentButton() {
 //     // add the is-dark class to the button's class list and display the year group dropdown
 //     studentButton.classList.toggle("is-dark");
-    
+
 //     if (yearGroupDropdown.style.display == "none") {
 //         yearGroupDropdown.style.display = "block";
 //     } else {
@@ -101,19 +101,19 @@ const teacherForm = document.querySelector("#teacher-form");
 
 
 studentFormTab.onclick = function toggleStudentForm() {
-    if (studentForm.style.display == "none") {
-        studentForm.style.display = "block";
-        teacherForm.style.display = "none";
-        studentFormTab.classList.add("is-active");
-        teacherFormTab.classList.remove("is-active");
-    }
+  if (studentForm.style.display == "none") {
+    studentForm.style.display = "block";
+    teacherForm.style.display = "none";
+    studentFormTab.classList.add("is-active");
+    teacherFormTab.classList.remove("is-active");
+  }
 }
 
 teacherFormTab.onclick = function toggleTeacherForm() {
-    if (teacherForm.style.display == "none") {
-        studentForm.style.display = "none";
-        teacherForm.style.display = "block";
-        teacherFormTab.classList.add("is-active");
-        studentFormTab.classList.remove("is-active");
-    }
+  if (teacherForm.style.display == "none") {
+    studentForm.style.display = "none";
+    teacherForm.style.display = "block";
+    teacherFormTab.classList.add("is-active");
+    studentFormTab.classList.remove("is-active");
+  }
 }

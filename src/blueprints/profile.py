@@ -13,7 +13,6 @@ profile = Blueprint("profile", __name__)
 @profile.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile_page():
-
     session["view"]["class_id"] = None
 
     if request.method == "POST":
@@ -38,6 +37,3 @@ def profile_page():
         return redirect("/profile")
     else:
         return render_template("profile.html", user_info=session["user_info"])
-
-
-

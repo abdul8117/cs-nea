@@ -1,16 +1,18 @@
+<!-- This HTML file with Jinja templating receives any flashed messages from the back-end for the purposes of showing errors to the user. This file included in other pages wherever needed. -->
+
 {% with messages = get_flashed_messages() %}
-    {% if messages %} 
-        <div class="message is-danger">
-            <div class="message-header">
-                <p>Error</p>
-            </div>
-            <div class="message-body">
-                <ul>
-                    {% for message in messages %}
-                        <li>{{message}}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    {% endif %}
+{% if messages %}
+<div class="message is-danger">
+  <div class="message-header">
+    <p>Error</p>
+  </div>
+  <div class="message-body">
+    <ul>
+      {% for message in messages %}
+      <li>{{message}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endif %}
 {% endwith %}

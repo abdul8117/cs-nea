@@ -1,7 +1,9 @@
+# This file contains all the functions that interact with the database.
+# Any functions here that are required by the codebase can be imported as needed.
+
 from flask import session
 
 import sqlite3, random, time
-
 
 DB_PATH = "db/database.db"
 
@@ -13,16 +15,13 @@ def get_subject_from_id(id):
 
     return subject
 
-
 def get_teacher_name(username):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
     teacher_name = cur.execute("SELECT first_name, surname FROM teachers WHERE username = ?", [username]).fetchall()[0]
-    print(teacher_name)
 
     return teacher_name[0].capitalize() + " " + teacher_name[1].capitalize()
-
 
 def get_class_info(class_id):
     """
@@ -71,13 +70,11 @@ def get_class_info(class_id):
 
     return class_info
 
-
 def get_class_size(class_id):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
     return cur.execute("SELECT COUNT(*) FROM students_in_classes WHERE class_id = ?", [class_id]).fetchone()[0]
-
 
 def get_all_subjects():
     con = sqlite3.connect(DB_PATH)
@@ -86,7 +83,6 @@ def get_all_subjects():
     subjects = cur.execute("SELECT * FROM subjects").fetchall()
 
     return subjects
-
 
 def update_name(f_name, s_name):
     from src.helpers import create_username
@@ -118,7 +114,6 @@ def update_name(f_name, s_name):
     session["user_info"]["surname"] = s_name
     session["user_info"]["username"] = new_username
 
-
 def update_year_group(year_group):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
@@ -134,7 +129,6 @@ def update_year_group(year_group):
     # update the session dict
     session["user_info"]["year_group"] = year_group
 
-
 def update_section(section):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
@@ -149,7 +143,6 @@ def update_section(section):
 
     # update the session dict
     session["user_info"]["section"] = section
-
 
 def update_email(email):
     con = sqlite3.connect(DB_PATH)
@@ -172,7 +165,6 @@ def update_email(email):
 
     session["user_info"]["email"] = email
 
-
 def create_class_db(title, subject_id, year_group, section):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
@@ -183,7 +175,6 @@ def create_class_db(title, subject_id, year_group, section):
 
     cur.execute(sql_query, [title, session["user_info"]["username"], subject_id, year_group, section])
 
-    # class_id = cur.execute("SELECT class_id FROM classes").fetchall()[0][-1]
     class_id = cur.execute("SELECT class_id FROM classes ORDER BY class_id DESC").fetchone()[0]
 
     join_code = f"{class_id}-{subject_id}{year_group}{random.randint(100, 1000)}"
@@ -195,7 +186,6 @@ def create_class_db(title, subject_id, year_group, section):
     con.commit()
     
     cur.close()
-
 
 def add_student_to_class(code):
     con = sqlite3.connect(DB_PATH)
@@ -214,7 +204,6 @@ def add_student_to_class(code):
         cur.close()
         return False
 
-
 def get_list_of_students_in_class():
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
@@ -231,7 +220,6 @@ def get_list_of_students_in_class():
     cur.close()
 
     return students
-
 
 def get_all_assignments(class_id):
     con = sqlite3.connect(DB_PATH)
