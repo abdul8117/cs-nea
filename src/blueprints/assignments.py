@@ -169,7 +169,7 @@ def download_attachment(class_id, assignment_id):
     file_name = cur.execute(sql, [assignment_id]).fetchone()[0]
     con.close()
 
-    # serve the file from the path in the attachments folder and serve the file to the user
+    # serve the file from the path in the attachments folder
     return send_file(f"attachments\\{class_id}\\{assignment_id}\\{file_name}")
 
 

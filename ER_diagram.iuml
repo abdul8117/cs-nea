@@ -1,0 +1,109 @@
+@startuml
+' https://plantuml.com/guide
+
+
+
+entity students {
+    username text PK
+    ---
+    first_name text
+    ---
+    surname text
+    ---
+    email text
+    ---
+    year_group int 
+    ---
+    section text
+    ---
+    password blob 
+    ---
+    salt blob
+}
+
+entity teachers {
+    username text PK
+    ---
+    suffix text
+    ---
+    first_name text
+    ---
+    surname text
+    ---
+    email text
+    ---
+    password blob
+    ---
+    salt blob
+}
+
+entity classes {
+    class_id int PK
+    ---
+    title text
+    ---
+    teacher text
+    ---
+    subject_id int
+    ---
+    year_group int
+    ---
+    section text
+    ---
+    join_code text
+}
+
+entity students_in_classes {
+    class_id int FK
+    ---
+    student_username text FK
+}
+
+entity subjects {
+    subject_id int PK
+    ---
+    subject text
+}
+
+entity assignments {
+    assignment_id int PK
+    ---
+    class_id int FK
+    ---
+    title text
+    ---
+    description text
+    ---
+    date_set int
+    ---
+    due_date int
+}
+
+entity attachments {
+    attachment_id int PK
+    ---
+    assignment_id int FK
+    ---
+    class_id int FK
+    ---
+    file_name text
+}
+
+entity assigned {
+    assignment_id int FK
+    ---
+    student_username text FK
+    ---
+    submitted int
+}
+
+
+students --|{ classes
+teachers --|{ classes
+classes --|{ assignments
+classes --|{ students_in_classes
+subjects --|{ classes
+assignments--|{ attachments
+assignments --|{ assigned
+
+@enduml

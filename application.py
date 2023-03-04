@@ -17,7 +17,6 @@ app = Flask(__name__)
 # Session config
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config["ATTACHMENTS_UPLOAD"] = "static/attachments"
 app.config["SESSION_COOKIE_PATH"] = "/"
 Session(app)
 

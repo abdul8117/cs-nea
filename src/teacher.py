@@ -4,6 +4,7 @@ from flask import session
 
 import sqlite3
 
+
 class Teacher(User):
     def __init__(self, first_name, surname, suffix, email, password):
         super().__init__(first_name, surname, email, password)

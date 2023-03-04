@@ -1,6 +1,6 @@
-from src.user import User, DB_PATH
-
 from flask import session
+
+from src.user import User, DB_PATH
 
 import sqlite3
 
@@ -42,28 +42,6 @@ class Student(User):
         cur.execute(sql, details)
         con.commit()
         con.close()
-    
-
-    @staticmethod
-    def login_query(username):
-        # Method to query the user in the database and return the results in a dictionary
-        con = sqlite3.connect(DB_PATH)
-        cur = con.cursor()
-
-        try:
-            db_username = cur.execute("SELECT * FROM students WHERE username = ?", [username]).fetchone()[0]
-            db_password = cur.execute("SELECT password FROM students WHERE username = ?", [username]).fetchone()[0]
-            salt = cur.execute("SELECT salt FROM students WHERE username = ?", [username]).fetchone()[0]
-        except sqlite3.Error:
-            return -1 # not found
-        
-        query = {
-            "username": db_username,
-            "password_hash": db_password,
-            "salt": salt
-        }
-
-        return query
 
 
     def save_into_session(self):

@@ -1,0 +1,50 @@
+' https://plantuml.com/guide
+
+@startuml
+class User {
+    first_name: str
+    surname: str
+    email: str
+    password: Password object
+    ---
+    login_query(username:str)
+    check_hash(pw:str, salt:str, db_pw_hash:str)
+}
+
+
+class Student {
+    year_group: int
+    section: char
+    username: str
+    ---
+    create_username(self)
+    insert_into_db(self)
+    save_into_session(self)
+}
+
+
+class Teacher {
+    suffix: str
+    username: str
+    ---
+    create_username(self)
+    insert_into_db(self)
+    save_into_session(self)
+}
+
+
+class Password {
+    password: str
+    salt: str
+    hash: bin
+    ---
+    generate_salt()
+    create_hash(self)
+}
+
+
+User - Student
+User - Teacher
+
+@enduml
+
